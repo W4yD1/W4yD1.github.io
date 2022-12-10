@@ -193,13 +193,13 @@
   
 
 <div id="banner" class="banner" parallax=true
-     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+     style="background: url('/img/background.png') no-repeat center center; background-size: cover;">
   <div class="full-bg-img">
     <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="An elegant Material-Design theme for Hexo"></span>
+            <span id="subtitle" data-typed-text="废物Pwn手"></span>
           
         </div>
 
@@ -237,13 +237,175 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2022/12/07/%E6%B5%99%E7%90%86%E4%BD%93%E8%82%B2%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" target="_blank">
+        <a href="/2022/12/10/inndy-stack/" target="_self">
+          inndy_stack
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2022/12/10/inndy-stack/" target="_self">
+        <div>
+          分析  32位,保护全开    实现了一个简单的栈    pop    push  思路 v6[0]是当前栈指针（esp），可以通过pop向后移动再push修改使其指向ret addr 可以通过pop泄露程序地址、栈地址和libc地址 泄露libc地址后ROP  Exp12345678910111213141516171819202122232425262728293031323334353637
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-12-10 13:39" pubdate>
+              2022-12-10
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/CTF/" class="category-chain-item">CTF</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/CTF/BUU/" class="category-chain-item">BUU</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/CTF/BUU/Pwn/" class="category-chain-item">Pwn</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/CTF/">#CTF</a>
+            
+              <a href="/tags/BUU/">#BUU</a>
+            
+              <a href="/tags/PWN/">#PWN</a>
+            
+              <a href="/tags/WP/">#WP</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/12/10/arr-sun-2016/" target="_self">
+          arr_sun_2016
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2022/12/10/arr-sun-2016/" target="_self">
+        <div>
+          分析  没开PIE和RELRO    有system函数    v1为int，输入负数绕过对v1的检测，v5[v1]时将v1当成unsigned int用，因此可以修改v5后任意地址的值    返回地址下面有一个栈地址，可以当作sh的指针  思路 修改返回地址为ret，再call system，目的是越过返回地址和栈地址中间的那个栈帧 修改栈地址为sh，距离返回地址的偏移为0x24  Exp123
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-12-10 13:33" pubdate>
+              2022-12-10
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/CTF/" class="category-chain-item">CTF</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/CTF/BUU/" class="category-chain-item">BUU</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/CTF/BUU/Pwn/" class="category-chain-item">Pwn</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/CTF/">#CTF</a>
+            
+              <a href="/tags/BUU/">#BUU</a>
+            
+              <a href="/tags/PWN/">#PWN</a>
+            
+              <a href="/tags/WP/">#WP</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/12/07/%E6%B5%99%E7%90%86%E4%BD%93%E8%82%B2%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" target="_self">
           浙理体育逆向分析
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2022/12/07/%E6%B5%99%E7%90%86%E4%BD%93%E8%82%B2%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/2022/12/07/%E6%B5%99%E7%90%86%E4%BD%93%E8%82%B2%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" target="_self">
         <div>
           看了qfrost师傅的文章“红蜻蜓”跑步APP逆向分析与数据伪造思路后，自己写了一个刷120km的脚本，新版本的浙理体育有些小改动，但大致不变，抓下上传时发送的包，修改下跑步时间就能构造伪造数据送给服务器，建议先看qfrost师傅的文章 抓包fiddler抓上传时的包，gzip解密就可以看到上传数据的格式              {‘begintime’:’’,‘endtime’:’’,‘uid
         </div>
@@ -300,13 +462,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2022/12/07/buuCTF-pwn-0ctf-2017-EasiestPrintf/" target="_blank">
+        <a href="/2022/12/07/buuCTF-pwn-0ctf-2017-EasiestPrintf/" target="_self">
           0ctf_2017_EasiestPrintf
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2022/12/07/buuCTF-pwn-0ctf-2017-EasiestPrintf/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/2022/12/07/buuCTF-pwn-0ctf-2017-EasiestPrintf/" target="_self">
         <div>
           0x01 分析  没开PIE    可以leak任意地址指向的数据    存在格式化字符串漏洞  0x02 利用 首先leak got表指向的libc函数地址 利用格式字符串漏洞修改__malloc_hook位one_gadget 通过printf打印超过65536个字符来调用malloc  0x03 Exp123456789101112131415161718192021222324252627
         </div>
@@ -337,12 +499,12 @@
   
     <span>></span>
     
-  <a href="/categories/CTF/Pwn/" class="category-chain-item">Pwn</a>
+  <a href="/categories/CTF/BUU/" class="category-chain-item">BUU</a>
   
   
     <span>></span>
     
-  <a href="/categories/CTF/Pwn/WP/" class="category-chain-item">WP</a>
+  <a href="/categories/CTF/BUU/Pwn/" class="category-chain-item">Pwn</a>
   
   
 
@@ -366,6 +528,8 @@
               <a href="/tags/BUU/">#BUU</a>
             
               <a href="/tags/PWN/">#PWN</a>
+            
+              <a href="/tags/WP/">#WP</a>
             
           </div>
         
