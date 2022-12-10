@@ -16,17 +16,22 @@
   <meta name="author" content="SayNOW">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Newbie">
+    <meta name="description" content="看了qfrost师傅的文章“红蜻蜓”跑步APP逆向分析与数据伪造思路后，自己写了一个刷120km的脚本，新版本的浙理体育有些小改动，但大致不变，抓下上传时发送的包，修改下跑步时间就能构造伪造数据送给服务器，建议先看qfrost师傅的文章 抓包fiddler抓上传时的包，gzip解密就可以看到上传数据的格式              {‘begintime’:’’,‘endtime’:’’,‘uid">
 <meta property="og:type" content="article">
 <meta property="og:title" content="浙理体育逆向分析">
 <meta property="og:url" content="http://www.willtakeittoten.xyz/2022/12/07/%E6%B5%99%E7%90%86%E4%BD%93%E8%82%B2%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/index.html">
 <meta property="og:site_name" content="SayNOW">
-<meta property="og:description" content="Newbie">
+<meta property="og:description" content="看了qfrost师傅的文章“红蜻蜓”跑步APP逆向分析与数据伪造思路后，自己写了一个刷120km的脚本，新版本的浙理体育有些小改动，但大致不变，抓下上传时发送的包，修改下跑步时间就能构造伪造数据送给服务器，建议先看qfrost师傅的文章 抓包fiddler抓上传时的包，gzip解密就可以看到上传数据的格式              {‘begintime’:’’,‘endtime’:’’,‘uid">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://www.willtakeittoten.xyz/2022/12/07/%E6%B5%99%E7%90%86%E4%BD%93%E8%82%B2%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/1.png">
+<meta property="og:image" content="http://www.willtakeittoten.xyz/2022/12/07/%E6%B5%99%E7%90%86%E4%BD%93%E8%82%B2%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/2.png">
 <meta property="article:published_time" content="2022-12-07T10:45:17.000Z">
-<meta property="article:modified_time" content="2022-12-07T10:45:17.924Z">
+<meta property="article:modified_time" content="2022-12-07T12:58:48.704Z">
 <meta property="article:author" content="SayNOW">
+<meta property="article:tag" content="逆向">
+<meta property="article:tag" content="Re">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://www.willtakeittoten.xyz/2022/12/07/%E6%B5%99%E7%90%86%E4%BD%93%E8%82%B2%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/1.png">
   
   
   
@@ -230,7 +235,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          0 字
+          638 字
         
       </span>
     
@@ -241,7 +246,7 @@
         
         
         
-          1 分钟
+          6 分钟
         
       </span>
     
@@ -284,7 +289,26 @@
             
               <div class="markdown-body">
                 
-                
+                <p>看了qfrost师傅的文章<a target="_blank" rel="noopener" href="http://www.qfrost.com/undefined/%E7%BA%A2%E8%9C%BB%E8%9C%93/">“红蜻蜓”跑步APP逆向分析与数据伪造思路</a>后，自己写了一个刷120km的脚本，新版本的浙理体育有些小改动，但大致不变，抓下上传时发送的包，修改下跑步时间就能构造伪造数据送给服务器，建议先看qfrost师傅的文章</p>
+<h1 id="抓包"><a href="#抓包" class="headerlink" title="抓包"></a>抓包</h1><p>fiddler抓上传时的包，gzip解密就可以看到上传数据的格式</p>
+<div class="note note-danger">
+            <p>{<br>‘begintime’:’’,<br>‘endtime’:’’,<br>‘uid’:’’,<br>‘schoolno’:’’,<br>‘distance’:’’,<br>‘speed’:’’,<br>‘studentno’:’’,<br>‘atttype’:’’,<br>‘eventno’:’’,<br>‘location’:’’,<br>‘pointstatus’:’’,<br>‘usetime’:’’<br>}</p>
+          </div>
+
+<h1 id="获取uid"><a href="#获取uid" class="headerlink" title="获取uid"></a>获取uid</h1><ul>
+<li><p>insertUUID 方法里更新uid<br><img src="/2022/12/07/%E6%B5%99%E7%90%86%E4%BD%93%E8%82%B2%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/1.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p>updateBindSchool 方法会调用insertUUID，它发送post请求向服务器请求uid<br><img src="/2022/12/07/%E6%B5%99%E7%90%86%E4%BD%93%E8%82%B2%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/2.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p>服务器地址为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">BIND_URL</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;http://quantiwang.cn:8012/cloud/DflyServer&quot;</span>;<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>发送格式为：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">name</span>=[<span class="hljs-string">&#x27;bangdingschool&#x27;</span>,<span class="hljs-string">&#x27;&#x27;</span>,<span class="hljs-string">&#x27;&#x27;</span>,<span class="hljs-string">&#x27;&#x27;</span>,<span class="hljs-string">&#x27;&#x27;</span>,<span class="hljs-string">&#x27;&#x27;</span>,<span class="hljs-string">&#x27;&#x27;</span>,<span class="hljs-string">&#x27;&#x27;</span>]<br></code></pre></td></tr></table></figure>
+<p>第二项是学校id，第三项是学号，后面的都是设备信息</p>
+</li>
+</ul>
+
                 
               </div>
             
@@ -292,6 +316,36 @@
             <div>
               <div class="post-metas my-3">
   
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Utility/" class="category-chain-item">Utility</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E9%80%86%E5%90%91/">#逆向</a>
+      
+        <a href="/tags/Re/">#Re</a>
+      
+    </div>
   
 </div>
 
