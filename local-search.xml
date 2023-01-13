@@ -4,6 +4,39 @@
   
   
   <entry>
+    <title>HGAME_2023_Week1_Wp</title>
+    <link href="/2023/01/12/HGAME-2023-Week1-Wp/"/>
+    <url>/2023/01/12/HGAME-2023-Week1-Wp/</url>
+    
+    <content type="html"><![CDATA[<h1 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h1><h2 id="Classic-Childhood-Game"><a href="#Classic-Childhood-Game" class="headerlink" title="Classic Childhood Game"></a>Classic Childhood Game</h2><h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p><img src="/2023/01/12/HGAME-2023-Week1-Wp/2.png"></p><ul><li>题目描述<br><img src="/2023/01/12/HGAME-2023-Week1-Wp/1.png"><br><img src="/2023/01/12/HGAME-2023-Week1-Wp/3.png"></li><li>一个游戏</li></ul><h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p><img src="/2023/01/12/HGAME-2023-Week1-Wp/4.png"></p><ul><li>F12查看源代码，游戏主要逻辑都写在core.js里，而且可以修改<br><img src="/2023/01/12/HGAME-2023-Week1-Wp/5.png"></li><li>打怪时对于HP，金币和经验的判定，修改Hero[“HP”] -&#x3D; Damage;为Hero[“HP”] +&#x3D; Damage;就可以一路通杀了</li><li>通关游戏即可获取flag，中途需要钥匙的地方可以同理改下代码</li><li>需要注意的是打完魔王后需要用稿子挖最上面的两个墙才可以进下个场景，稿子不够也可以改代码</li></ul><h2 id="Become-A-Member"><a href="#Become-A-Member" class="headerlink" title="Become A Member"></a>Become A Member</h2><h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><p><img src="/2023/01/12/HGAME-2023-Week1-Wp/7.png"></p><ul><li>题目描述<br><img src="/2023/01/12/HGAME-2023-Week1-Wp/6.png"></li><li>主页</li></ul><h3 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h3><ul><li>根据描述，可以看出是个http题目</li><li>首先修改<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ruby"><span class="hljs-title class_">User</span>-<span class="hljs-title class_">Agent</span><span class="hljs-symbol">:Cute-Bunny</span><br></code></pre></td></tr></table></figure><img src="/2023/01/12/HGAME-2023-Week1-Wp/8.png"></li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>CTF</category>
+      
+      <category>HGAME</category>
+      
+      <category>Wp</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>CTF</tag>
+      
+      <tag>WP</tag>
+      
+      <tag>HGAME</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>NepNep_Catctf_wp</title>
     <link href="/2023/01/02/NepNep-Catctf-wp/"/>
     <url>/2023/01/02/NepNep-Catctf-wp/</url>
