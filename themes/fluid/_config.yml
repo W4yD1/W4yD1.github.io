@@ -1003,9 +1003,15 @@ links:
   items:
     - {
       title: "Qfrost",
-      intro: "Re神",
+      intro: "Re✌",
       link: "http://www.qfrost.com/",
       avatar: "/img/qfrost.jpg"
+    }
+    - {
+      title: "juvl1ne",
+      intro: "Web✌",
+      link: "https://juvl1ne.github.io/",
+      avatar: "/img/avatar1.png"
     }
 
   # 当成员头像加载失败时，替换为指定图片
