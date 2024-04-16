@@ -4,8 +4,6 @@ date: 2023-01-02 15:31:15
 tags: [CTF, NepNep, CatCtf, WP]
 categories: 
     - CTF
-    - Pwn
-    - Misc
     - NepNep
 comment: true
 ---
