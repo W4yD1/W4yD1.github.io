@@ -6,6 +6,27 @@ categories:
     - 笔记
 ---
 
+# 环境
+
+## qemu
+``` BASH
+sudo apt install --install-suggests qemu
+```
+
+## gdb-multiarch
+``` BASH
+sudo apt-get install gdb-multiarch
+```
+
+## mips软件包
+``` BASH
+<!-- 具备MIPS交叉编译gcc与MIPS程序动态链接库 -->
+sudo apt-get install gcc-mips-linux-gnu
+sudo apt-get install gcc-mipsel-linux-gnu
+sudo apt-get install gcc-mips64-linux-gnuabi64
+sudo apt-get install gcc-mips64el-linux-gnuabi64
+```
+
 # 启动
 ## Step 1
 ``` shell
@@ -21,6 +42,8 @@ gdb-multiarch -q mips
 ```
 ## Step 3
 ``` gdb
+set architecture mips
+set endian big
 target remote :9000
 ```
 

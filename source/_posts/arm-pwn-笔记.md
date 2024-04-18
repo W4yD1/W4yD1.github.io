@@ -6,6 +6,16 @@ categories:
     - 笔记
 ---
 
+# 环境
+
+## arm软件包
+``` BASH
+sudo apt search "libc6-" | grep "arm"
+sudo apt install libc6-arm64-cross
+```
+安装好的库/usr/aarch64-linux-gnu/lib/目录下
+
+
 # 汇编
 ## 跳转指令
 
@@ -38,9 +48,23 @@ categories:
 
 ## 传参方式
 
-用$a0~$a3传递函数的前4个参数，记忆方法，寄存器名字a实际为argument的缩写，多余的参数用栈传递
+用$R0~$R3传递函数的前4个参数，其余参数从右到左入栈
 
+
+## 相似处
+
+- R13 相当于栈指针ESP/RSP
+- PC 相当于EIP/RIP指针
+- LR link register 保存返回地址的寄存器
+- BL 相当于call ， 跳转并把返回值保存到LR中
+- B 相当于jmp
+- BX 跳转并切换状态 ARM 与THUMB 指令
+- BLX 带返回的跳转并切换状态
 
 ## 函数返回值
 
-W0、X1、X2寄存器用于前3个参数
+返回值存放在r0
+
+# 寄存器
+
+![](1.png)
