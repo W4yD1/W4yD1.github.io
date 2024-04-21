@@ -86,6 +86,7 @@ X-Forwarded-For:127.0.0.1
 - 直接复制json写脚本发100次请求拿到flag
 
 ### Exp
+{% spoiler "点击显/隐内容" %}
 ``` python3
 from http import cookiejar
 import requests
@@ -628,6 +629,7 @@ header={
 r=s.get(url,headers=header)
 print(r.text)
 ```
+{% endspoiler %}
 
 ## Show Me Your Beauty
 
