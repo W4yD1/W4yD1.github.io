@@ -107,5 +107,5 @@ theme: fluid
 deploy:
   type: git
   repo: 
-    github: git@github.com:W4y2Sh3ll/W4y2Sh3ll.github.io.git
+    github: https://github.com/W4y2Sh3ll/W4y2Sh3ll.github.io.git
   branch: master
