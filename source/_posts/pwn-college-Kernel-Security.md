@@ -1,10 +1,10 @@
 ---
 title: pwn.college Kernel Security
 date: 2024-07-15 15:44:34
-tags: [pwn.college, Kernel]
+tags: [pwn.college, Linux Kernel]
 categories: 
     - pwn.college
-    - Kernel Security
+    - Linux Kernel Security
 ---
 
 

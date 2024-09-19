@@ -5,9 +5,10 @@ sticky: 100
 ---
 
 # 虚拟机逃逸
+# Lua Pwn
+# Php Pwn
 # Musl Pwn
 # Kernel Pwn
 # LLVM Pwn
 # V8
 
-# Kernel Pwn
