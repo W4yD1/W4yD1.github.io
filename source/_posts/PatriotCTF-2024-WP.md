@@ -189,7 +189,7 @@ void cleanup_module(void) {
 ### 漏洞
 
 #### 越界读
-ioctl 0x10可以修改max变量的值，然而0x40处的`copy_to_user`的第三个参数又max控制，因此可以泄露容易长度的内核栈数据。
+ioctl 0x10可以修改max变量的值，然而0x40处的`copy_to_user`的第三个参数由max控制，因此可以泄露任意长度的内核栈数据。
 
 #### 越界写
 ioctl 0x20申请堆块后，写入操作会执行两次，首先`validate_buf`会调用`get_storage_contents`写入数据，然后检查数据长度是否小于240，如果小于则返回True，然后`edit_storage`检查`validate_buf`的返回值，如果为True则进行第二次写入。
