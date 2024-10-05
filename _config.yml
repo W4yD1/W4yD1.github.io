@@ -4,7 +4,7 @@
 
 # Site
 title: W4y2Sh3ll
-subtitle: 'CTFer'
+subtitle: 'Zzzz'
 description: 'Newbie'
 keywords:
 author: W4y2Sh3ll
@@ -107,5 +107,5 @@ theme: fluid
 deploy:
   type: git
   repo: 
-    github: git@github.com:W4y2Sh3ll/W4y2Sh3ll.github.io.git
+    github: https://github.com/W4y2Sh3ll/W4y2Sh3ll.github.io.git
   branch: master
