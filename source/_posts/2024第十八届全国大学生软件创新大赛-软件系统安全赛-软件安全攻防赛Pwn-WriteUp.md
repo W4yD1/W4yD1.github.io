@@ -98,6 +98,7 @@ __int64 __fastcall fetch(vm *a1, type1 *a2)
 }
 ```
 
+#### 字节码格式
 
 operation3的字节码格式如下：
 ![](image-4.png)
