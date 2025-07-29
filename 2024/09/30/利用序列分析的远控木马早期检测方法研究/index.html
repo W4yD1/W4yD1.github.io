@@ -1,0 +1,837 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=dark>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/Patrick.png">
+  <link rel="icon" href="/img/Patrick.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="W4y2Sh3ll">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="摘要现阶段基于网络的远控木马检测方法大多对数据流的完整性有较高的要求，其检测存在一定程度的滞后。 该文在分析远控木马通信会话建立后初期流量的序列特性的基础上，提出了一种基于序列分析的远控木马早期检测方法。该方法以远控木马被控端和控制端交互中第一条 TCP 流为分析对象，重点关注流中由内部主机向外部网络发送且数据包传输层负载大于α字节的第一个数据包（上线包）及其后续数个数据包，从中提取包含传输负载大">
+<meta property="og:type" content="article">
+<meta property="og:title" content="利用序列分析的远控木马早期检测方法研究">
+<meta property="og:url" content="https://www.w4y2sh3ll.top/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/index.html">
+<meta property="og:site_name" content="W4y2Sh3ll">
+<meta property="og:description" content="摘要现阶段基于网络的远控木马检测方法大多对数据流的完整性有较高的要求，其检测存在一定程度的滞后。 该文在分析远控木马通信会话建立后初期流量的序列特性的基础上，提出了一种基于序列分析的远控木马早期检测方法。该方法以远控木马被控端和控制端交互中第一条 TCP 流为分析对象，重点关注流中由内部主机向外部网络发送且数据包传输层负载大于α字节的第一个数据包（上线包）及其后续数个数据包，从中提取包含传输负载大">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image-2.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image-1.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image-3.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image-4.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image-5.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image-6.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image-7.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image-8.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image-9.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image-10.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image-11.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image-12.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image-13.png">
+<meta property="article:published_time" content="2024-09-30T06:19:10.000Z">
+<meta property="article:modified_time" content="2025-04-22T06:44:04.518Z">
+<meta property="article:author" content="W4y2Sh3ll">
+<meta property="article:tag" content="论文阅读">
+<meta property="article:tag" content="远控木马早期检测">
+<meta property="article:tag" content="Remote Access Trojan">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.w4y2sh3ll.top/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image.png">
+  
+  
+  
+  <title>利用序列分析的远控木马早期检测方法研究 - W4y2Sh3ll</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.w4y2sh3ll.top","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>W4y2Sh3ll</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Kernel/">
+                
+                Kernel
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="利用序列分析的远控木马早期检测方法研究"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-09-30 14:19" pubdate>
+          2024年9月30日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          40 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">利用序列分析的远控木马早期检测方法研究</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><p>现阶段基于网络的远控木马检测方法大多对数据流的完整性有较高的要求，其检测存在一定程度的滞后。</p>
+<p>该文在分析远控木马通信会话建立后初期流量的序列特性的基础上，提出了一种基于序列分析的远控木马早期检测方法。该方法以远控木马被控端和控制端交互中第一条 TCP 流为分析对象，重点关注流中由内部主机向外部网络发送且数据包传输层负载大于α字节的第一个数据包（上线包）及其后续数个数据包，从中提取包含传输负载大小序列、传输字节数和时间间隔在内的三维特征并运用机器学习算法构建了高效的早期检测模型。</p>
+<p>该方法具备快速检测远控木马的能力，其通过远控木马会话建立后初期的少量数据包即可高准确率地检测出远控木马流量。</p>
+<h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>为应对远控木马所引发的安全威胁，近年来国内外研究者提出了一系列远控木马检测方法。基于网络流量的检测方法是现阶段远控木马检测方法的主流，但是所提方法中大多运用的是从整个流中提取的统计特征，对木马通信流的完整性要求较高，致使可能出现在检测到远控木马流量的同时，被控主机已然执行部分攻击指令而已经出现了隐私信息泄露的情况。因此，为实现对远控木马的有效防御，对检测方法的检测及时性提出了越来越高的要求。</p>
+<p>该文分析了远控木马会话建立后初期的网络流量行为，发现其控制端和被控端通常会在该时间段中出现不涉及人为操作而自动进行的、较为固定的数据包交互行为，且该行为与正常应用同时期的流量存在明显的序列差异。</p>
+<p>基于上述分析结果，该文提出了一种基于序列分析的远控木马早期检测方法。该方法针对远控木马会话建立后初期流量中“上线包”及其后少量数据包所提取的包负载大小序列、包时间间隔以及包负载上传下载比三个特征，运用机器学习算法建立木马检测模型实现对远控木马的早期检测。</p>
+<p>该文的主要贡献如下：</p>
+<ul>
+<li>发现远控木马和正常软件各自通信会话建立后连接初期的流量在数据包负载大小、数据包时间间隔等方面存在明显区别，并进一步分析了远控木马通信会话建立后流量中第一次出现、且具有较大负载的“上线包”及其之后的数个数据包所具有的特性。</li>
+<li>基于远控木马和正常软件在会话建立初期通信流量的差别，提出了一种基于序列分析的远控木马检测方法。</li>
+<li>搭建模拟环境对所提出的远控木马检测方法进行了实验测试，并探索了“上线包”后不同的数据包数量对于所提方法检测结果的影响。</li>
+</ul>
+<h1 id="相关工作"><a href="#相关工作" class="headerlink" title="相关工作"></a>相关工作</h1><h2 id="基于主机的检测方法"><a href="#基于主机的检测方法" class="headerlink" title="基于主机的检测方法"></a>基于主机的检测方法</h2><ul>
+<li>通过将程序运行中的 API 调用转化为灰度图并运用图像识别相关技术来检测木马。</li>
+<li>通过收集恶意程序在沙箱中运行的早期行为来进行恶意程序判别。</li>
+<li>基于 <code>n-gram</code> 的关联分析法提出了一种木马程序的检测模型。</li>
+</ul>
+<p>基于主机的检测方法需要将检测系统部署在主机上，除了占用一定主机资源之外，还需要涉及对系统的底层操作，可能对主机的稳定性造成一定影响。并且随着隐蔽技术在远控木马中的应用及发展，基于主机的检测难度逐渐增加。</p>
+<h2 id="基于网络的检测方法"><a href="#基于网络的检测方法" class="headerlink" title="基于网络的检测方法"></a>基于网络的检测方法</h2><ul>
+<li>通过分析远控木马的通信行为，将远控木马运行过程分为建立连接、命令控制与保持连接三个阶段，从每个阶段中提取不同的统计特征并结合 C4.5 算法实现检测。（需要使用完整的数据流）</li>
+<li>基于异常网络行为的远控木马检测模型。（需要使用完整的数据流）</li>
+<li>从TCP 三次握手后且相邻数据包时间间隔大于 1 秒之前的阶段中提取了数据包数量、上下行数据包数量比等 6 个统计特征来快速检测远控木马。（漏报率较高）</li>
+<li>上一个方法基础上多提取另外两个主机特征。（漏报率较高）</li>
+<li>从 TCP 会话的前 5 个数据包中提取了 14 个特征。（需要对多个 TCP 会话进行检测）</li>
+<li>先对数据流进行切片，再以每个切片中前三个包的方向序列来判断数据流是否属于远控木马会话。（需要分析每条流中 250 个数据包）</li>
+<li>从每个数据包中提取出特征向量，并运用集成学习对每个分类器的检测结果进行投票来获得高检测率。（需要很长的训练时间和检测时间）</li>
+</ul>
+<p>现阶段基于网络的检测方法大多对数据流的完整性有较高的要求，其检测存在一定程度的滞后；已有的远控木马早期检测方法则较少考虑数据流的序列特性而仅使用统计特征导致误报率较高。因此，本文重点关注远控木马通信会话建立后初期流量的序列特性，旨在高准确率的前提下及时地检测出远控木马流量。</p>
+<h1 id="木马通信行为分析"><a href="#木马通信行为分析" class="headerlink" title="木马通信行为分析"></a>木马通信行为分析</h1><p>早期的远控木马通常由控制端发出连接请求以连接被控端。但是随着防火墙的广泛应用和发展，越来越多的远控木马采用反弹式连接（即由被控端发起连接请求以连接控制端）来避开防火墙的筛查。</p>
+<p>如下图所示，远控木马的运行过程可以划分为建立连接、命令交互和保持存活三个“阶段”。在建立连接阶段，被控端与控制端通过 TCP 三次握手完成连接，之后被控端会主动回传受害者的上线信息；命令交互阶段中部分木马会在主连接存在的情况下建立次连接用于执行指令与回传结果；而在保持存活阶段，攻击者通过设计心跳行为来保持持续的连接，部分木马的心跳包会以一定模式贯穿远控木马整个通信周期。</p>
+<p><img src="/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image.png" srcset="/img/loading.gif" lazyload alt="远控木马的通信流程图"></p>
+<p>远控木马在会话建立后初期传输的数据量不会太多，建立连接阶段被控端需要反复发出连接请求直至控制端对其进行响应，之后被控端将收集到的受害者主机信息主动回传给攻击者，这种回传信息的数据包的负载通常较大，与其余早期交互的数据包负载大小存在明显区别。</p>
+<p>本文将由{源 <code>IP</code> 地址、目的 <code>IP</code> 地址以及传输层协议}三元组确定的网络通信流定义为 <code>IP</code> 会话，并将 <code>IP</code> 会话的第一条 <code>TCP</code> 流中由内部主机向外部网络发送且数据包传输层负载大于 <code>α</code> 字节的第一个数据包定义为信息回传包，也称为上线包。下表统计了 35 个远控木马在建立连接阶段的上线包的负载大小情况：</p>
+<p><img src="/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image-2.png" srcset="/img/loading.gif" lazyload alt="上线包在建立连接阶段中的负载情况"></p>
+<p>由上表可知，上线包的负载在远控木马建立连接阶段的数据传输总量中占了极大比重，且 orion、mega等木马在该阶段只进行了信息回传操作。</p>
+<p>如下图所示，不同远控木马的上线包负载大小因其传输内容不同而大小不一，为能够全部覆盖本文所分析远控木马的上线包，本文将 α 设定为 60。</p>
+<p><img src="/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image-1.png" srcset="/img/loading.gif" lazyload alt="实验所用远控木马的上线包负载分布"></p>
+<p>远控木马被控端向控制端主动发送上线包后，控制端会发送一个 <code>ACK</code> 包告知被控端已确认接收，在这之后的数个数据包可能出现在以下不同阶段从而具有不同特性：</p>
+<ol>
+<li>建立连接阶段：上线包之后数个数据包的负载大小往往小于上线包的负载大小。</li>
+<li>命令交互阶段：由于指令对应的数据包大多只包含少许指令参数，其负载通常较小。</li>
+<li>保持存活阶段：。由于心跳包在大多数情况下不涉及信息交互，其负载通常较小。</li>
+</ol>
+<p>由以上分析可知，远控木马在上线包之后的数个数据包倾向于使用小包传输，而正常应用程序为实现资源快速交互会在建立连接后进行大量数据交换行为，与远控木马形成了鲜明对比。同样，此行为将使得正常程序在这几个数据包的上下行字节比值较小，远控木马则与之相反。另外，对于在建立连接阶段仅进行上线操作的远控木马，上线包与其后的数个数据包之间会因人为反应或心跳间隙造成较大的时间间隔，而正常程序在网络不发生堵塞时较少发生该情况。</p>
+<div class="note note-info">
+            <p>该文将由远控木马被控端（对应正常应用客户端）向远控木马控制端（对应正常应用服务端）的传输流量统称为上行流量，反之为下行流量</p>
+          </div>
+
+
+<h1 id="基于序列分析的远控木马早期检测方法"><a href="#基于序列分析的远控木马早期检测方法" class="headerlink" title="基于序列分析的远控木马早期检测方法"></a>基于序列分析的远控木马早期检测方法</h1><h2 id="检测方法"><a href="#检测方法" class="headerlink" title="检测方法"></a>检测方法</h2><p>基于上部分的分析结果，远控木马在建立连接阶段中存在自动且相对固定的数据包交互行为，且该行为与正常应用存在明显区别。如果能在远控木马实现命令交互以获取受害者隐私信息前发现其流量，则能够有效降低受害者隐私泄露的风险，达到早期检测的目的。</p>
+<p>因此，本文在对远控木马通信会话建立后初期的数据包序列进行分析的基础上，运用时序特征与统计特征，提出了一种基于序列分析的远控木马早期检测方法，该方法能够在远控木马会话建立初期及时且高准确率地检测出远控木马流量。</p>
+<p>如下图所示，本文所提出的基于序列分析的远控木马早期检测方法首先对数据包进行过滤并抽取通信会话，选取每个会话中的第一条 TCP流，以内部主机向外部网络发送的上线包为标志，加上其后数个数据包共同用于提取时序特征及统计特征，然后运用机器学习算法训练检测模型，最后交由训练好的检测模型对待检流量进行检测以判别该流量是正常应用流量还是远控木马流量。</p>
+<p><img src="/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image-3.png" srcset="/img/loading.gif" lazyload alt="基于序列分析的远控木马早期检测方法"></p>
+<h2 id="特征提取"><a href="#特征提取" class="headerlink" title="特征提取"></a>特征提取</h2><p>本文选择上线包及其后续数个数据包的传输负载大小序列、传输字节数和时间间隔作为特征，具体介绍如下。</p>
+<h3 id="传输负载序列"><a href="#传输负载序列" class="headerlink" title="传输负载序列"></a>传输负载序列</h3><p>本文以上线包的大小作为阈值，将包负载字节数小于上线包大小（60 字节）的数据包称为小包并记为 0，反之则称为大包并记为 1。</p>
+<p>下表统计了 717 条正常会话与 985 条远控木马会话上线包之后 3 个数据包的负载大小序列列(S)的分布情况：</p>
+<p><img src="/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image-4.png" srcset="/img/loading.gif" lazyload alt="上线包后续 3 个数据包负载序列次数统计"></p>
+<p>表中序列个数小于 3 时表示网络流中上线包后出现的数据包数量不足 3 个。可以看出，正常应用所产生的网络流量的负载序列多集中在“011”与“11”类型；而远控木马出于对自身隐蔽性的考虑，上线包后的数个数据包多为小包。因此，我们将上线包后的数个数据包负载序列作为检测远控木马流量的特征之一。</p>
+<h3 id="传输字节数"><a href="#传输字节数" class="headerlink" title="传输字节数"></a>传输字节数</h3><p>远控木马在上线包之后的数个数据包倾向于使用小包传输。因此，远控木马被动端所发出的上线包及之后交互的数个数据包的上下行字节比(R)通常也会较大。</p>
+<p>下图展示了 4 个远控木马被控端与 5 个正常应用控制端所发出的上线包及其后交互的 3 个包（4Pks）的上下行字节比值情况。</p>
+<p><img src="/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image-5.png" srcset="/img/loading.gif" lazyload alt="上线包与之后 3 个数据包(4Pks)上下行字节比"></p>
+<p>可以看出，这些木马流量的上下行字节比值在 10 左右，而正常应用的该值小于 1，有明显区别。因此，我们将上线包与之后 3 个数据包(4Pks)上下行字节比作为检测远控木马流量的特征之一。</p>
+<p>由于本文方法需要使用的数据包数量较少，有可能出现下行数据包负载之和为 0 的情况。本方法在下行数据包负载之和为 0 时将选择所有上行数据负载之和作为特征值。</p>
+<h3 id="时间间隔"><a href="#时间间隔" class="headerlink" title="时间间隔"></a>时间间隔</h3><p>下图展示了远控木马与正常应用数据流传输对比：</p>
+<p><img src="/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image-6.png" srcset="/img/loading.gif" lazyload alt="远控木马与正常应用数据流传输对比"></p>
+<p>可以看出，远控木马在上线包发出后到接收到控制命令之间需要 t 秒的攻击者反应时间，而正常应用客户端在发出资源请求后服务器会很快返回大量的响应数据包，区别明显。因此，我们选取上线包及其后数个数据包中最大的一个时间间隔作为检测远控木马流量的特征之一，记为T。</p>
+<h2 id="训练与检测"><a href="#训练与检测" class="headerlink" title="训练与检测"></a>训练与检测</h2><p>本阶段的主要工作是基于上述特征提取阶段所得到的特征向量构建一个检测模型用于区分远控木马流量与正常应用流量。本文分别运用了支持向量机(SVM)、贝叶斯(NB)、K 临近(KNN)、随机森林(RF)以及决策树(DT)等 5 种分类算法训练检测模型并对其检测结果进行对比。</p>
+<h1 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h1><h2 id="实验环境"><a href="#实验环境" class="headerlink" title="实验环境"></a>实验环境</h2><p>在搭建实验环境时，为保护内网主机安全，本文将远控木马的控制端安装在具有公有IP 的云服务器上，而被控端安装在局域网内的 Vmware 虚拟机中。实验拓扑如下：</p>
+<p><img src="/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image-7.png" srcset="/img/loading.gif" lazyload alt="实验拓扑"></p>
+<h2 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h2><p>实验数据如下：</p>
+<p><img src="/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image-8.png" srcset="/img/loading.gif" lazyload alt="实验数据"></p>
+<h2 id="评估标准"><a href="#评估标准" class="headerlink" title="评估标准"></a>评估标准</h2><p>本文采用准确率（Accuracy）、漏报率（FNR,False Negative Rate）以及误报率（FPR，False PositiveRate）这三个常用评价指标来衡量本文所提方法的检测效果。</p>
+<h2 id="实验结果与分析"><a href="#实验结果与分析" class="headerlink" title="实验结果与分析"></a>实验结果与分析</h2><h3 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h3><p>5 种算法在不同数据包数下对已知木马测试集的检测结果：</p>
+<p><img src="/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image-9.png" srcset="/img/loading.gif" lazyload alt="5 种算法在不同数据包数下对已知木马测试集的检测结果"></p>
+<p>5 种算法在已知远控木马测试集上的 Accuracy：</p>
+<p><img src="/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image-10.png" srcset="/img/loading.gif" lazyload alt="5 种算法在已知远控木马测试集上的 Accuracy"></p>
+<p>可以看出，5种算法中SVM与 NB 的 Accuracy 较低，其余 3 种算法均在 4Pks时取得最佳的 Accuracy。经分析发现，这是因为方法所使用的特征T随着用于提取特征的数据包数量增加，其对于正常流量和远控木马流量的区分能力有所下降。</p>
+<p>不同数据包下 T 的值大于 1 秒的样本数：</p>
+<p><img src="/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image-11.png" srcset="/img/loading.gif" lazyload alt="不同数据包下 T 的值大于 1 秒的样本数"></p>
+<p>可以看到用于提取特征的数据包数为 4Pks 时，T的值大于 1 秒的木马流量样本多于正常流量样本；而当用于提取特征的数据包数为 5Pks 时，T的值大于 1 秒的流量中正常流量样本占了大部分。因此本文所提检测方法将检测数据包数设定为 4Pks。</p>
+<p>下表统计了在 4Pks 时对未知远控木马测试集所得到的 Accuracy、FNR 与 FPR 值：</p>
+<p><img src="/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image-12.png" srcset="/img/loading.gif" lazyload alt="4Pks 时 5 种算法对未知远控木马的检测结果"></p>
+<h3 id="结果分析"><a href="#结果分析" class="headerlink" title="结果分析"></a>结果分析</h3><p>下表统计了4pks 时 5 种算法对已知远控木马的训练及检测时长：</p>
+<p><img src="/2024/09/30/%E5%88%A9%E7%94%A8%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%E7%9A%84%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/image-13.png" srcset="/img/loading.gif" lazyload alt="4pks 时 5 种算法对已知远控木马的训练及检测时长"></p>
+<p>可以看出，本文方法使用这五种算法均能具有高的检测效率。</p>
+<h1 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h1><h2 id="创新点"><a href="#创新点" class="headerlink" title="创新点"></a>创新点</h2><ul>
+<li>发现远控木马和正常软件各自通信会话建立后连接初期的流量在数据包负载大小、数据包时间间隔等方面存在明显区别。</li>
+<li>基于远控木马和正常软件在会话建立初期通信流量的差别，提出了一种基于序列分析的远控木马检测方法。</li>
+</ul>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" class="category-chain-item">论文阅读</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B/" class="category-chain-item">远控木马早期检测</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">#论文阅读</a>
+      
+        <a href="/tags/%E8%BF%9C%E6%8E%A7%E6%9C%A8%E9%A9%AC%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B/">#远控木马早期检测</a>
+      
+        <a href="/tags/Remote-Access-Trojan/">#Remote Access Trojan</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>利用序列分析的远控木马早期检测方法研究</div>
+      <div>https://www.w4y2sh3ll.top/2024/09/30/利用序列分析的远控木马早期检测方法研究/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>W4y2Sh3ll</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年9月30日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <div id="twikoo"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/twikoo/1.6.7/twikoo.all.min.js', function() {
+        var options = Object.assign(
+          {"envId":"https://blog-comments-beige.vercel.app","region":"ap-shanghai","path":"window.location.pathname"},
+          {
+            el: '#twikoo',
+            path: 'window.location.pathname',
+            onCommentLoaded: function() {
+              var imgSelector = '#twikoo .tk-content img:not(.tk-owo-emotion)';
+              Fluid.plugins.imageCaption(imgSelector);
+              Fluid.plugins.fancyBox(imgSelector);
+            }
+          }
+        )
+        twikoo.init(options)
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>W4y2Sh3ll</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div style="font-size: 0.85rem"> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

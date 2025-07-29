@@ -1,0 +1,777 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=dark>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/Patrick.png">
+  <link rel="icon" href="/img/Patrick.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="W4y2Sh3ll">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Abstract许多恶意软件通过加壳来绕过检测，因此准确高效的加壳器识别（Packer Identification）方法对恶意软件检测来说十分重要，本文给出2-SPIFF——一种2段式的加壳器识别方法，阶段一通过从程序的FCG图中提取特征来辨别程序是否加壳，阶段二通过从FCG图和文件属性中提取的融合特征来识别加壳器。 0x01. Background恶意软件会对组织或个人设备造成严重损坏，许多恶">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2-SPIFF 论文阅读笔记">
+<meta property="og:url" content="https://www.w4y2sh3ll.top/2024/04/19/2-SPIFF-%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="W4y2Sh3ll">
+<meta property="og:description" content="Abstract许多恶意软件通过加壳来绕过检测，因此准确高效的加壳器识别（Packer Identification）方法对恶意软件检测来说十分重要，本文给出2-SPIFF——一种2段式的加壳器识别方法，阶段一通过从程序的FCG图中提取特征来辨别程序是否加壳，阶段二通过从FCG图和文件属性中提取的融合特征来识别加壳器。 0x01. Background恶意软件会对组织或个人设备造成严重损坏，许多恶">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/04/19/2-SPIFF-%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/1.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/04/19/2-SPIFF-%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/3.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/04/19/2-SPIFF-%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/2.png">
+<meta property="article:published_time" content="2024-04-19T09:36:34.000Z">
+<meta property="article:modified_time" content="2025-04-22T06:44:04.484Z">
+<meta property="article:author" content="W4y2Sh3ll">
+<meta property="article:tag" content="论文阅读">
+<meta property="article:tag" content="壳检测">
+<meta property="article:tag" content="恶意软件检测">
+<meta property="article:tag" content="malware detection">
+<meta property="article:tag" content="paker detection">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.w4y2sh3ll.top/2024/04/19/2-SPIFF-%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/1.png">
+  
+  
+  
+  <title>2-SPIFF 论文阅读笔记 - W4y2Sh3ll</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.w4y2sh3ll.top","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>W4y2Sh3ll</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Kernel/">
+                
+                Kernel
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="2-SPIFF 论文阅读笔记"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-04-19 17:36" pubdate>
+          2024年4月19日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          11k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          94 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">2-SPIFF 论文阅读笔记</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>许多恶意软件通过加壳来绕过检测，因此准确高效的加壳器识别（Packer Identification）方法对恶意软件检测来说十分重要，本文给出<a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1007/s10489-021-02347-w"><code>2-SPIFF</code></a>——一种2段式的加壳器识别方法，阶段一通过从程序的FCG图中提取特征来辨别程序是否加壳，阶段二通过从FCG图和文件属性中提取的融合特征来识别加壳器。</p>
+<h1 id="0x01-Background"><a href="#0x01-Background" class="headerlink" title="0x01. Background"></a>0x01. Background</h1><p>恶意软件会对组织或个人设备造成严重损坏，许多恶意软件通过代码混淆和反调试来绕过检测，代码混淆技术包括冗余代码生成、花指令和加壳技术。奥萨格于2016年指出，80%的恶意软件使用了加壳技术。加壳技术通常会破坏原始程序的汇编代码，因此基于汇编代码的静态分析检测方法将变得不可行。<br>加壳器识别本质上是个分类问题，因此机器学习被广泛应用于该问题中，在先前的研究中，许多图结构被用来构建分类模型，包括数据流图、系统调用依赖图、函数调用图（FCG）和持续执行图（CEG）。<code>2-SPIFF</code>基于<em><strong>函数调用图（FCG）和文件属性</strong></em>。</p>
+<div class="note note-info">
+            <p>之所以使用FCG是因为它直观的展示了程序的控制流程，且相当于CEG，FCG的节点和边都会更少，生成FCG的时间比CEG更快。</p>
+          </div>
+<div class="note note-success">
+            <p>还需要文件属性的原因是不同加壳器生成的加壳程序可能会有相同的FCG图，因此需要进一步从文件属性中提取能够区分不同加壳器的特征</p>
+          </div>
+<h1 id="0x02-Main-Steps"><a href="#0x02-Main-Steps" class="headerlink" title="0x02. Main Steps"></a>0x02. Main Steps</h1><p><code>2-SPIFF</code>框架：<br><img src="/2024/04/19/2-SPIFF-%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/1.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="step1-File-preprocessing"><a href="#step1-File-preprocessing" class="headerlink" title="step1. File preprocessing"></a>step1. File preprocessing</h2><p>通过类似IDA Pro的静态分析工具提取出GDL，从而得到FCG</p>
+<div class="note note-success">
+            <p>Graph Description Language（GDL）一种中间语言，用于描述图中节点和边的关系</p>
+          </div>
+<p>以下是一个GDL文件实例：</p>
+<div class='spoiler collapsed'>
+    <div class='spoiler-title'>
+        点击显/隐内容
+    </div>
+    <div class='spoiler-content'>
+        <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br></pre></td><td class="code"><pre><code class="hljs GDL">graph: &#123;<br>title: &quot;Call flow of vuln&quot;<br>// IDA palette<br>colorentry 32: 0 0 0<br>colorentry 33: 0 0 255<br>colorentry 34: 0 0 255<br>colorentry 35: 128 128 128<br>colorentry 36: 128 128 128<br>colorentry 37: 0 0 128<br>colorentry 38: 0 0 128<br>colorentry 39: 0 0 255<br>colorentry 40: 0 0 255<br>colorentry 41: 0 0 128<br>colorentry 42: 0 128 0<br>colorentry 43: 0 255 0<br>colorentry 44: 0 128 0<br>colorentry 45: 255 128 0<br>colorentry 46: 0 128 0<br>colorentry 47: 128 128 255<br>colorentry 48: 255 0 0<br>colorentry 49: 128 128 0<br>colorentry 50: 1 1 1<br>colorentry 51: 192 192 192<br>colorentry 52: 0 0 255<br>colorentry 53: 0 0 255<br>colorentry 54: 0 0 255<br>colorentry 55: 128 128 128<br>colorentry 56: 128 128 255<br>colorentry 57: 0 128 0<br>colorentry 58: 0 0 128<br>colorentry 59: 0 0 255<br>colorentry 60: 128 0 128<br>colorentry 61: 0 128 0<br>colorentry 62: 0 128 0<br>colorentry 63: 0 128 64<br>colorentry 64: 0 0 128<br>colorentry 65: 0 0 128<br>colorentry 66: 255 0 255<br>colorentry 67: 128 128 0<br>colorentry 68: 0 0 128<br>colorentry 69: 0 0 255<br>colorentry 70: 0 0 128<br>colorentry 71: 0 0 255<br>colorentry 72: 0 0 0<br>colorentry 73: 255 255 255<br>colorentry 74: 192 187 175<br>colorentry 75: 0 255 255<br>colorentry 76: 0 0 0<br>colorentry 77: 128 0 0<br>colorentry 78: 128 128 128<br>colorentry 79: 128 128 0<br>colorentry 80: 255 0 255<br>colorentry 81: 0 0 0<br>colorentry 82: 0 0 255<br>colorentry 83: 0 0 0<br>colorentry 84: 50 205 50<br>node: &#123; title: &quot;0&quot; label: &quot;.init_proc&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;1&quot; label: &quot;sub_401020&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;2&quot; label: &quot;sub_401030&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;3&quot; label: &quot;sub_401040&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;4&quot; label: &quot;sub_401050&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;5&quot; label: &quot;sub_401060&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;6&quot; label: &quot;sub_401070&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;7&quot; label: &quot;sub_401080&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;8&quot; label: &quot;sub_401090&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;9&quot; label: &quot;sub_4010A0&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;10&quot; label: &quot;sub_4010B0&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;11&quot; label: &quot;sub_4010C0&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;12&quot; label: &quot;sub_4010D0&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;13&quot; label: &quot;.free&quot; color: 80 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;14&quot; label: &quot;.puts&quot; color: 80 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;15&quot; label: &quot;.write&quot; color: 80 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;16&quot; label: &quot;.__stack_chk_fail&quot; color: 80 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;17&quot; label: &quot;.printf&quot; color: 80 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;18&quot; label: &quot;.read&quot; color: 80 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;19&quot; label: &quot;.malloc&quot; color: 80 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;20&quot; label: &quot;.setvbuf&quot; color: 80 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;21&quot; label: &quot;.__isoc99_scanf&quot; color: 80 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;22&quot; label: &quot;.exit&quot; color: 80 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;23&quot; label: &quot;_start&quot; color: green bordercolor: black &#125;<br>node: &#123; title: &quot;24&quot; label: &quot;_dl_relocate_static_pie&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;25&quot; label: &quot;deregister_tm_clones&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;26&quot; label: &quot;register_tm_clones&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;27&quot; label: &quot;__do_global_dtors_aux&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;28&quot; label: &quot;frame_dummy&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;29&quot; label: &quot;menu&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;30&quot; label: &quot;get_choice&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;31&quot; label: &quot;add_chunk&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;32&quot; label: &quot;delete_chunk&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;33&quot; label: &quot;view_chunk&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;34&quot; label: &quot;manba&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;35&quot; label: &quot;init&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;36&quot; label: &quot;main&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;37&quot; label: &quot;atexit&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;38&quot; label: &quot;.term_proc&quot; color: 76 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;39&quot; label: &quot;free&quot; color: 80 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;40&quot; label: &quot;__libc_start_main&quot; color: 80 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;41&quot; label: &quot;puts&quot; color: 80 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;42&quot; label: &quot;write&quot; color: 80 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;43&quot; label: &quot;__stack_chk_fail&quot; color: 80 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;44&quot; label: &quot;printf&quot; color: 80 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;45&quot; label: &quot;read&quot; color: 80 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;46&quot; label: &quot;malloc&quot; color: 80 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;47&quot; label: &quot;setvbuf&quot; color: 80 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;48&quot; label: &quot;__cxa_atexit&quot; color: 80 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;49&quot; label: &quot;__isoc99_scanf&quot; color: 80 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;50&quot; label: &quot;exit&quot; color: 80 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;51&quot; label: &quot;__gmon_start__&quot; color: 80 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;52&quot; label: &quot;__libc_start_main&quot; color: 80 textcolor: 73 bordercolor: black &#125;<br>node: &#123; title: &quot;53&quot; label: &quot;__gmon_start__&quot; color: 80 textcolor: 73 bordercolor: black &#125;<br>// node 0<br>edge: &#123; sourcename: &quot;0&quot; targetname: &quot;51&quot; &#125;<br>edge: &#123; sourcename: &quot;0&quot; targetname: &quot;53&quot; &#125;<br>// node 1<br>// node 2<br>// node 3<br>// node 4<br>// node 5<br>// node 6<br>// node 7<br>// node 8<br>// node 9<br>// node 10<br>// node 11<br>// node 12<br>// node 13<br>// node 14<br>// node 15<br>// node 16<br>// node 17<br>// node 18<br>// node 19<br>// node 20<br>// node 21<br>// node 22<br>// node 23<br>edge: &#123; sourcename: &quot;23&quot; targetname: &quot;40&quot; &#125;<br>edge: &#123; sourcename: &quot;23&quot; targetname: &quot;52&quot; &#125;<br>// node 24<br>// node 25<br>// node 26<br>// node 27<br>edge: &#123; sourcename: &quot;27&quot; targetname: &quot;25&quot; &#125;<br>// node 28<br>// node 29<br>edge: &#123; sourcename: &quot;29&quot; targetname: &quot;14&quot; &#125;<br>edge: &#123; sourcename: &quot;29&quot; targetname: &quot;17&quot; &#125;<br>// node 30<br>edge: &#123; sourcename: &quot;30&quot; targetname: &quot;16&quot; &#125;<br>edge: &#123; sourcename: &quot;30&quot; targetname: &quot;21&quot; &#125;<br>// node 31<br>edge: &#123; sourcename: &quot;31&quot; targetname: &quot;14&quot; &#125;<br>edge: &#123; sourcename: &quot;31&quot; targetname: &quot;16&quot; &#125;<br>edge: &#123; sourcename: &quot;31&quot; targetname: &quot;17&quot; &#125;<br>edge: &#123; sourcename: &quot;31&quot; targetname: &quot;18&quot; &#125;<br>edge: &#123; sourcename: &quot;31&quot; targetname: &quot;19&quot; &#125;<br>edge: &#123; sourcename: &quot;31&quot; targetname: &quot;21&quot; &#125;<br>// node 32<br>edge: &#123; sourcename: &quot;32&quot; targetname: &quot;13&quot; &#125;<br>edge: &#123; sourcename: &quot;32&quot; targetname: &quot;14&quot; &#125;<br>edge: &#123; sourcename: &quot;32&quot; targetname: &quot;16&quot; &#125;<br>edge: &#123; sourcename: &quot;32&quot; targetname: &quot;17&quot; &#125;<br>edge: &#123; sourcename: &quot;32&quot; targetname: &quot;21&quot; &#125;<br>// node 33<br>edge: &#123; sourcename: &quot;33&quot; targetname: &quot;14&quot; &#125;<br>edge: &#123; sourcename: &quot;33&quot; targetname: &quot;15&quot; &#125;<br>edge: &#123; sourcename: &quot;33&quot; targetname: &quot;16&quot; &#125;<br>edge: &#123; sourcename: &quot;33&quot; targetname: &quot;17&quot; &#125;<br>edge: &#123; sourcename: &quot;33&quot; targetname: &quot;21&quot; &#125;<br>// node 34<br>edge: &#123; sourcename: &quot;34&quot; targetname: &quot;17&quot; &#125;<br>// node 35<br>edge: &#123; sourcename: &quot;35&quot; targetname: &quot;20&quot; &#125;<br>edge: &#123; sourcename: &quot;35&quot; targetname: &quot;37&quot; &#125;<br>// node 36<br>edge: &#123; sourcename: &quot;36&quot; targetname: &quot;14&quot; &#125;<br>edge: &#123; sourcename: &quot;36&quot; targetname: &quot;22&quot; &#125;<br>edge: &#123; sourcename: &quot;36&quot; targetname: &quot;29&quot; &#125;<br>edge: &#123; sourcename: &quot;36&quot; targetname: &quot;30&quot; &#125;<br>edge: &#123; sourcename: &quot;36&quot; targetname: &quot;31&quot; &#125;<br>edge: &#123; sourcename: &quot;36&quot; targetname: &quot;32&quot; &#125;<br>edge: &#123; sourcename: &quot;36&quot; targetname: &quot;33&quot; &#125;<br>edge: &#123; sourcename: &quot;36&quot; targetname: &quot;35&quot; &#125;<br>// node 37<br>// node 38<br>// node 39<br>// node 40<br>// node 41<br>// node 42<br>// node 43<br>// node 44<br>// node 45<br>// node 46<br>// node 47<br>// node 48<br>// node 49<br>// node 50<br>// node 51<br>// node 52<br>// node 53<br>&#125;<br></code></pre></td></tr></table></figure>
+    </div>
+</div>
+<p>对应的FCG图为：<br><img src="/2024/04/19/2-SPIFF-%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/3.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="step2-Feature-extraction"><a href="#step2-Feature-extraction" class="headerlink" title="step2. Feature extraction"></a>step2. Feature extraction</h2><p>从FCG中提取19个特征，从文件属性中提取6个特征<br>各特征如下图所示：<br><img src="/2024/04/19/2-SPIFF-%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/2.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="step3-Packer-detection"><a href="#step3-Packer-detection" class="headerlink" title="step3. Packer detection"></a>step3. Packer detection</h2><p>这一步的目的是判断程序是否加壳，是一个二分类问题<br>程序在加壳后的FCG图会比加壳前简单，可根据这一特征来检测程序是否加壳<br><code>2-SPIFF</code>从FCG图中提取19个特征来构建检测模型</p>
+<div class="note note-success">
+            <p>如果某种加壳器加壳后的程序的FCG与原程序的FCG一致，该检测方法还有效吗？</p>
+          </div>
+<h2 id="step4-Packer-identification"><a href="#step4-Packer-identification" class="headerlink" title="step4. Packer identification"></a>step4. Packer identification</h2><p>这一步的目的是识别加壳程序所使用的加壳器，是一个多分类问题<br>程序被不同的加壳器加壳后，FCG大多数会不一样，但也有可能会有FCG相似，但加壳器不同的情况，此时可在FCG特征的基础上加上文件属性特征，将两种特征融合起来去识别不同的加壳器<br><code>2-SPIFF</code>将19个图特征和6个文件特征级联起来构建识别模型，使用 <em><strong>class prob</strong></em> 和一个阈值 $\tau$ 来识别某加壳文件的加壳器，<em><strong>class prob</strong></em> 是一个数组，每一项代表某个加壳器的概率，如果最大的 <em><strong>class prob$_{i}$</strong></em> 小于 $\tau$ ，则该项的识别结果为“未知”</p>
+<h1 id="0x03-Inovation"><a href="#0x03-Inovation" class="headerlink" title="0x03. Inovation"></a>0x03. Inovation</h1><ul>
+<li>发现了程序加壳前后FCG的不同之处，加壳后的程序FCG往往会更加简单</li>
+<li>不同加壳器可能生成相同的FCG，但不同加壳器使用不同的算法，这导致被不同加壳器加壳后的程序在文件属性中必有差异</li>
+<li>结合以上两个特征，提出了一种两段式的加壳器检测方法，第一阶段根据FCG特征构建模型检测是否加壳，第二阶段根据FCG特征和文件属性特征构建模型来检测使用了什么加壳器</li>
+</ul>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" class="category-chain-item">论文阅读</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%A3%80%E6%B5%8B/" class="category-chain-item">恶意软件检测</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">#论文阅读</a>
+      
+        <a href="/tags/%E5%A3%B3%E6%A3%80%E6%B5%8B/">#壳检测</a>
+      
+        <a href="/tags/%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%A3%80%E6%B5%8B/">#恶意软件检测</a>
+      
+        <a href="/tags/malware-detection/">#malware detection</a>
+      
+        <a href="/tags/paker-detection/">#paker detection</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>2-SPIFF 论文阅读笔记</div>
+      <div>https://www.w4y2sh3ll.top/2024/04/19/2-SPIFF-论文阅读笔记/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>W4y2Sh3ll</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年4月19日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <div id="twikoo"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/twikoo/1.6.7/twikoo.all.min.js', function() {
+        var options = Object.assign(
+          {"envId":"https://blog-comments-beige.vercel.app","region":"ap-shanghai","path":"window.location.pathname"},
+          {
+            el: '#twikoo',
+            path: 'window.location.pathname',
+            onCommentLoaded: function() {
+              var imgSelector = '#twikoo .tk-content img:not(.tk-owo-emotion)';
+              Fluid.plugins.imageCaption(imgSelector);
+              Fluid.plugins.fancyBox(imgSelector);
+            }
+          }
+        )
+        twikoo.init(options)
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>W4y2Sh3ll</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div style="font-size: 0.85rem"> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

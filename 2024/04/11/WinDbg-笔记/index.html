@@ -1,0 +1,758 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=dark>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/Patrick.png">
+  <link rel="icon" href="/img/Patrick.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="W4y2Sh3ll">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="符号1234567.sympath   &#x2F;&#x2F; 查看当前符号查找路径.sympath c:\symbols   &#x2F;&#x2F; 将符号查找路径设为：c:\symbols.sympath+ c:\symbols  &#x2F;&#x2F; 将c:\symbols添加到符号查找路径集合中.reload &#x2F;&#x2F; 为所有已加载模块载入符号信息.reload &#x2F;f &#x2F;v &#x2F;&#x2F; f:强制立即模式（不允许延迟载入）  v:详细模式.reload">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WinDbg 笔记">
+<meta property="og:url" content="https://www.w4y2sh3ll.top/2024/04/11/WinDbg-%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="W4y2Sh3ll">
+<meta property="og:description" content="符号1234567.sympath   &#x2F;&#x2F; 查看当前符号查找路径.sympath c:\symbols   &#x2F;&#x2F; 将符号查找路径设为：c:\symbols.sympath+ c:\symbols  &#x2F;&#x2F; 将c:\symbols添加到符号查找路径集合中.reload &#x2F;&#x2F; 为所有已加载模块载入符号信息.reload &#x2F;f &#x2F;v &#x2F;&#x2F; f:强制立即模式（不允许延迟载入）  v:详细模式.reload">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-04-11T05:54:57.000Z">
+<meta property="article:modified_time" content="2025-04-22T06:44:04.514Z">
+<meta property="article:author" content="W4y2Sh3ll">
+<meta property="article:tag" content="笔记">
+<meta property="article:tag" content="WinDbg">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>WinDbg 笔记 - W4y2Sh3ll</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.w4y2sh3ll.top","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>W4y2Sh3ll</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Kernel/">
+                
+                Kernel
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="WinDbg 笔记"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-04-11 13:54" pubdate>
+          2024年4月11日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          29 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">WinDbg 笔记</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="符号"><a href="#符号" class="headerlink" title="符号"></a>符号</h1><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli"><span class="hljs-string">.sympath</span>   <span class="hljs-string">//</span> 查看当前符号查找路径<br><span class="hljs-string">.sympath</span> c:\symbols   <span class="hljs-string">//</span> 将符号查找路径设为：c:\symbols<br><span class="hljs-string">.sympath</span>+ c:\symbols  <span class="hljs-string">//</span> 将c:\symbols添加到符号查找路径集合中<br><br><span class="hljs-string">.reload</span> <span class="hljs-string">//</span> 为所有已加载模块载入符号信息<br><span class="hljs-string">.reload</span> <span class="hljs-string">/f</span> <span class="hljs-string">/v</span> <span class="hljs-string">//</span> f:强制立即模式（不允许延迟载入）  v:详细模式<br><span class="hljs-string">.reload</span> <span class="hljs-string">/f</span> @<span class="hljs-string">&quot;c:\windows\System32\verifier.dll&quot;</span> <span class="hljs-string">//</span> 为指定模块加载符号信息<br></code></pre></td></tr></table></figure>
+
+
+<h1 id="系统模块与PE文件检索："><a href="#系统模块与PE文件检索：" class="headerlink" title="系统模块与PE文件检索："></a>系统模块与PE文件检索：</h1><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli">0<span class="hljs-function">:000</span>&gt; lm            <span class="hljs-string">//</span> 列出所有模块对应的符号信息<br>0<span class="hljs-function">:000</span>&gt; lmv           <span class="hljs-string">//</span> 列出所有模块对应的符号信息<br>0<span class="hljs-function">:000</span>&gt; lmt           <span class="hljs-string">//</span> 列出所有模块的基地址和偏移<br>0<span class="hljs-function">:000</span>&gt; lmf           <span class="hljs-string">//</span> 列出所有DLL的具体路径<br>0<span class="hljs-function">:000</span>&gt; lmvm ntdll    <span class="hljs-string">//</span> 查看ntdll.dll的详细信息<br>0<span class="hljs-function">:000</span>&gt; !lmi ntdll    <span class="hljs-string">//</span> 查看ntdll.dll的详细信息<br><br>0<span class="hljs-function">:000</span>&gt; !dlls -a               <span class="hljs-string">//</span> 列出镜像文件PE结构的文件头<br>0<span class="hljs-function">:000</span>&gt; !dlls -l               <span class="hljs-string">//</span> 按照顺序列出所有加载的模块<br>0<span class="hljs-function">:000</span>&gt; !dlls -c ntCreateFile  <span class="hljs-string">//</span> 查询指定函数所在的模块<br>0<span class="hljs-function">:000</span>&gt; !dlls -c ntdll.dll     <span class="hljs-string">//</span> 列出特定模块头信息<br>0<span class="hljs-function">:000</span>&gt; !dlls -s -c ntdll.dll  <span class="hljs-string">//</span> 列出ntdll.dll的节区<br>0<span class="hljs-function">:000</span>&gt; !dlls -v -c ntdll      <span class="hljs-string">//</span> 查看ntdll.dll的详细信息<br><br>0<span class="hljs-function">:000</span>&gt; ld *         <span class="hljs-string">//</span> 为所有模块加载符号<br>0<span class="hljs-function">:000</span>&gt; ld kernel32 <span class="hljs-string">//</span> 加载kernel32.dll的符号<br>0<span class="hljs-function">:000</span>&gt; x*!                    <span class="hljs-string">//</span> 列出加载的所有符号信息<br>0<span class="hljs-function">:000</span>&gt; x ntdll!*              <span class="hljs-string">//</span> 列出ntdll.dll中的所有符号<br>0<span class="hljs-function">:000</span>&gt; x ntdll!nt*            <span class="hljs-string">//</span> 列出ntdll.dll模块中所有nt开头的符号<br>0<span class="hljs-function">:000</span>&gt; x <span class="hljs-string">/t</span> <span class="hljs-string">/v</span> ntdll!*        <span class="hljs-string">//</span> 带数据类型、符号类型和大小信息列出符号<br>0<span class="hljs-function">:000</span>&gt; x kernel32!*Load*      <span class="hljs-string">//</span> 列出kernel32模块中所有含Load字样的符号<br></code></pre></td></tr></table></figure>
+<h1 id="进程与线程操作"><a href="#进程与线程操作" class="headerlink" title="进程与线程操作"></a>进程与线程操作</h1><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli">| <span class="hljs-string">//</span> 列出调试进程<br>!dml_proc             <span class="hljs-string">//</span> 显示当前进程信息<br><span class="hljs-string">.tlist</span> -v             <span class="hljs-string">//</span> 列出所有运行中的进程<br>~   <span class="hljs-string">//</span> 列出线程<br>~.  <span class="hljs-string">//</span> 查看当前线程<br>~*  <span class="hljs-string">//</span> 所有线程<br>~0s <span class="hljs-string">//</span> 查看主线程<br>~* k <span class="hljs-string">//</span> 所有线程堆栈信息<br>~* r <span class="hljs-string">//</span> 所有线程寄存器信息<br>~<span class="hljs-comment"># // 查看导致当前事件或异常的线程</span><br>~N  <span class="hljs-string">//</span> 查看序数为N的线程<br>~~[n]  <span class="hljs-string">//</span> 查看线程ID为n的线程  n为16进制<br>~Ns   <span class="hljs-string">//</span> 切换序数为N的线程为当前调试线程<br>~~[n]s  <span class="hljs-string">//</span> 切换线程ID为n的线程为当前调试线程  n为16进制<br>~3f      <span class="hljs-string">//</span>把三号线程冻住<br>~2u       <span class="hljs-string">//</span>把二号线程解冻<br><br>~N n  <span class="hljs-string">//</span> Suspend序数为N的线程<br>~N m <span class="hljs-string">//</span> Resume序数为N的线程<br>!runaway  <span class="hljs-string">//</span>显示当前进程的所有线程用户态时间信息<br>!runaway f  <span class="hljs-string">//</span>显示当前进程的所有线程用户态、内核态、存活时间信息<br>!locks <span class="hljs-string">//</span> 显示死锁<br>!cs  <span class="hljs-string">//</span> 列出CriticalSection（临界段）的详细信息<br><br>0<span class="hljs-function">:000</span>&gt; <span class="hljs-string">.formats</span> 1d78  <span class="hljs-string">//</span> 格式化输出PID<br>!handle  <span class="hljs-string">//</span> 查看所有句柄的ID<br></code></pre></td></tr></table></figure>
+
+<h1 id="反汇编指令与内存断点"><a href="#反汇编指令与内存断点" class="headerlink" title="反汇编指令与内存断点"></a>反汇编指令与内存断点</h1><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs armasm">u   <span class="hljs-comment">// 反汇编当前eip寄存器地址的后8条指令</span><br><span class="hljs-symbol">ub</span>  <span class="hljs-comment">// 反汇编当前eip寄存器地址的前8条指令</span><br>u main.exe+<span class="hljs-number">0x10</span> L20 <span class="hljs-comment">// 反汇编main.exe+0x10地址后20条指令</span><br><span class="hljs-symbol">uf</span> lyshark::<span class="hljs-keyword">add</span>  <span class="hljs-comment">// 反汇编lyshark类的add函数</span><br><span class="hljs-symbol">uf</span> /c main  <span class="hljs-comment">// 反汇编main函数</span><br><span class="hljs-symbol">ub</span> <span class="hljs-number">000</span>c135d L20  <span class="hljs-comment">// 查看地址为000c135d指令前的20条指令内容</span><br><br>r <span class="hljs-comment">// 显示所有寄存器信息及发生core所在的指令</span><br>r eax, edx <span class="hljs-comment">// 显示eax，edx寄存器信息</span><br>r eax<span class="hljs-number">=5</span>, edx<span class="hljs-number">=6</span>  <span class="hljs-comment">// 对寄存器eax赋值为5，edx赋值为6</span><br><br>g  <span class="hljs-comment">// Go 让程序跑起来</span><br>p    <span class="hljs-comment">// 单步执行(F10)</span><br>p <span class="hljs-number">2</span> <span class="hljs-comment">// 2为步进数目</span><br><span class="hljs-symbol">pc</span>   <span class="hljs-comment">// 执行到下一个函数调用处停下</span><br><span class="hljs-symbol">pa</span> <span class="hljs-number">0x7c801b0b</span> <span class="hljs-comment">// 执行到7c801b0b地址处停下</span><br>t     <span class="hljs-comment">// 停止执行</span><br><br>!address -summary  <span class="hljs-comment">// 显示进程的内存统计信息</span><br>!address -f:stack  <span class="hljs-comment">// 查看栈的内存信息</span><br>!address <span class="hljs-number">0x77c000</span>   <span class="hljs-comment">// 查看该地址处的内存属性</span><br><br><span class="hljs-keyword">bl</span>   <span class="hljs-comment">// 列出所有断点</span><br><span class="hljs-symbol">bc</span> * <span class="hljs-comment">// 清除所有断点</span><br><span class="hljs-symbol">be</span> *  <span class="hljs-comment">// 启用所有断点</span><br><span class="hljs-symbol">bd</span> *  <span class="hljs-comment">// 禁用所有断点</span><br><br><span class="hljs-symbol">bc</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">5</span>  <span class="hljs-comment">// 清除1号、2号、5号断点</span><br><span class="hljs-symbol">be</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">5</span> <span class="hljs-comment">// 启用1号、2号、5号断点</span><br><span class="hljs-symbol">bd</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">5</span> <span class="hljs-comment">// 禁用1号、2号、5号断点</span><br><br><span class="hljs-keyword">bp</span> main    <span class="hljs-comment">// 在main函数开头设置一个断点</span><br><span class="hljs-keyword">bp</span> <span class="hljs-number">0x7c801b00</span>  <span class="hljs-comment">// 在7c801b00地址处放置一个断点</span><br><span class="hljs-keyword">bp</span> main.exe+<span class="hljs-number">0x1032</span>  <span class="hljs-comment">// 在模块MyDll.dll偏移0x1032处放置一个断点</span><br><span class="hljs-keyword">bp</span> <span class="hljs-comment">@$exentry  // 在进程的入口放置一个断点</span><br><span class="hljs-symbol">bm</span> message_*  <span class="hljs-comment">// 匹配message_开头的函数，并在这些函数起始处都打上断点</span><br></code></pre></td></tr></table></figure>
+
+<h1 id="搜索"><a href="#搜索" class="headerlink" title="搜索"></a>搜索</h1><figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ada">在指定范围搜索特定的数据类型<br>s -<span class="hljs-keyword">type</span> <span class="hljs-type">范围  </span>要搜索的数据<br><span class="hljs-keyword">type</span> <span class="hljs-type">: </span>b-Byte , W-Word , d-DWord , q-QWord , a-ASCII字符串 , u-Unicode字符串<br><br></code></pre></td></tr></table></figure>
+
+<h1 id="堆栈操作"><a href="#堆栈操作" class="headerlink" title="堆栈操作"></a>堆栈操作</h1><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli">k  <span class="hljs-string">//</span> 显示当前调用堆栈<br>kn <span class="hljs-string">//</span> 带栈编号显示当前调用堆栈<br>kb  <span class="hljs-string">//</span> 打印出前3个函数参数的当前调用堆栈<br>kb 5 <span class="hljs-string">//</span> 只显示最上的5层调用堆栈<br><br>kv   <span class="hljs-string">//</span> 在kb的基础上增加了函数调用约定、FPO等信息<br>kp  <span class="hljs-string">//</span> 显示每一层函数调用的完整参数，包括参数类型、名字、取值<br>kd  <span class="hljs-string">//</span> 打印堆栈的地址<br>kD  <span class="hljs-string">//</span> 从当前esp地址处，向高地址方向搜索符号（注：函数是符号的一种）<br>dds 02a9ffec  <span class="hljs-string">//</span> 从02a9ffec地址处，向高地址方向搜索符号（注：函数是符号的一种）<br>dds  <span class="hljs-string">//</span> 执行完dds 02a9ffec后，可通过dds命令继续进行搜索<br><br><span class="hljs-string">.frame</span> <span class="hljs-string">//</span> 显示当前栈帧<br><span class="hljs-string">.frame</span> n  <span class="hljs-string">//</span> 显示编号为n的栈帧（n为16进制数）<br><span class="hljs-string">.frame</span> <span class="hljs-string">/r</span> n <span class="hljs-string">//</span> 显示编号n的栈帧（n为16进制数） 并显示寄存器变量<br><span class="hljs-string">.frame</span> <span class="hljs-string">/c</span> n <span class="hljs-string">//</span> 设置编号n的栈帧为当前栈帧（n为16进制数）<br>!uniqstack <span class="hljs-string">//</span> 显示所有线程的调用堆栈<br>!findstack kernel32 2 <span class="hljs-string">//</span> 显示包含kernel32模块（用星号标出）的所有栈的信息<br>!heap -s  <span class="hljs-string">//</span> 显示进程堆的个数<br>dt _HEAP 00140000  <span class="hljs-string">//</span> 选取一个堆的地址，打印该堆的内存结构<br>!heap -a 00140000 <span class="hljs-string">//</span> 选取一个堆的地址，打印该堆的信息，比上面打印内存命令更详细直观<br></code></pre></td></tr></table></figure>
+
+<h1 id="其他命令"><a href="#其他命令" class="headerlink" title="其他命令"></a>其他命令</h1><figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc">dt ntdll!* // 显示ntdll里的所有类型信息<br>dt -rv <span class="hljs-emphasis">_TEB</span><br><span class="hljs-emphasis">dt -rv _PEB</span><br><span class="hljs-emphasis">dt -v _PEB @$PEB</span><br><span class="hljs-emphasis">dt _PEB_LDR_DATA</span><br><span class="hljs-emphasis">dt _</span>TEB ny LastErrorValue // 只查看TEB（thread&#x27;s environment block）结构成员LastErrorValue<br><br>dt <span class="hljs-emphasis">_eprocess</span><br><span class="hljs-emphasis">dt _</span>eprocess 0x510<br><br>!dh 773a0000                 显示文件PE头<br><br><span class="hljs-strong">*是通配符；显示所有peb打头的结构体名称；</span><br><span class="hljs-strong">dt ntdll!_peb*</span><br><br>0:000&gt; dt -rv ntkrnlmp!<span class="hljs-strong">*Object*</span>  枚举ntkrnlmp中带&quot;Object&quot;的结构体名称；<br><br><span class="hljs-title">.attach  PID  附加进程</span><br><span class="hljs-title">.detach         结束会话</span><br><br><span class="hljs-title">.dump  文件名  转存文件</span><br><span class="hljs-title">.opendump     打开文件</span><br><br>dt -v ntdll!*           # 列出ntdll中的全部结构体，导出的函数名也会列出<br><br>dt ntdll!<span class="hljs-strong">*file*</span>           # 下面命令将列出ntdll导出的文件操作相关的函数名<br>dt <span class="hljs-emphasis">_FILE_INFORMATION_CLASS      查看一个结构定义</span><br><span class="hljs-emphasis">dt ntdll!_</span>*   列出ntdll中结构体<br></code></pre></td></tr></table></figure><link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%AC%94%E8%AE%B0/" class="category-chain-item">笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%AC%94%E8%AE%B0/">#笔记</a>
+      
+        <a href="/tags/WinDbg/">#WinDbg</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>WinDbg 笔记</div>
+      <div>https://www.w4y2sh3ll.top/2024/04/11/WinDbg-笔记/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>W4y2Sh3ll</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年4月11日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/04/11/ToDo/" title="ToDo">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">ToDo</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/01/12/HGAME-2023-Week1-Wp/" title="HGAME_2023_Week1_Wp">
+                        <span class="hidden-mobile">HGAME_2023_Week1_Wp</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <div id="twikoo"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/twikoo/1.6.7/twikoo.all.min.js', function() {
+        var options = Object.assign(
+          {"envId":"https://blog-comments-beige.vercel.app","region":"ap-shanghai","path":"window.location.pathname"},
+          {
+            el: '#twikoo',
+            path: 'window.location.pathname',
+            onCommentLoaded: function() {
+              var imgSelector = '#twikoo .tk-content img:not(.tk-owo-emotion)';
+              Fluid.plugins.imageCaption(imgSelector);
+              Fluid.plugins.fancyBox(imgSelector);
+            }
+          }
+        )
+        twikoo.init(options)
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>W4y2Sh3ll</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div style="font-size: 0.85rem"> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

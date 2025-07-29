@@ -1,0 +1,783 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=dark>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/Patrick.png">
+  <link rel="icon" href="/img/Patrick.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="W4y2Sh3ll">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="恶意软件包如何被下载到本地的名称相似包攻击者上传一个名字和公开软件包相似的包，例如上传一个恶意包并且命名为Pythom，当用户需要下载Python却打错字为Pythom时，恶意软件包就会被下载。 依赖混淆攻击者上传一个被其它包依赖的同名恶意软件包，但是该恶意软件包拥有更高的版本号，用户同步包时会选择版本更高的那个，此时恶意软件包就会被下载。 成为开发者！攻击者直接参与维护公开软件包，并且植入恶意代">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DONAPI: Malicious NPM Packages Detector using Behavior Sequence Knowledge Mapping">
+<meta property="og:url" content="https://www.w4y2sh3ll.top/2024/10/15/DONAPI-Malicious-NPM-Packages-Detector-using-Behavior-Sequence-Knowledge-Mapping/index.html">
+<meta property="og:site_name" content="W4y2Sh3ll">
+<meta property="og:description" content="恶意软件包如何被下载到本地的名称相似包攻击者上传一个名字和公开软件包相似的包，例如上传一个恶意包并且命名为Pythom，当用户需要下载Python却打错字为Pythom时，恶意软件包就会被下载。 依赖混淆攻击者上传一个被其它包依赖的同名恶意软件包，但是该恶意软件包拥有更高的版本号，用户同步包时会选择版本更高的那个，此时恶意软件包就会被下载。 成为开发者！攻击者直接参与维护公开软件包，并且植入恶意代">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/10/15/DONAPI-Malicious-NPM-Packages-Detector-using-Behavior-Sequence-Knowledge-Mapping/image.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/10/15/DONAPI-Malicious-NPM-Packages-Detector-using-Behavior-Sequence-Knowledge-Mapping/image-1.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/10/15/DONAPI-Malicious-NPM-Packages-Detector-using-Behavior-Sequence-Knowledge-Mapping/image-2.png">
+<meta property="article:published_time" content="2024-10-15T06:46:49.000Z">
+<meta property="article:modified_time" content="2025-04-22T06:44:04.487Z">
+<meta property="article:author" content="W4y2Sh3ll">
+<meta property="article:tag" content="论文阅读">
+<meta property="article:tag" content="恶意软件包检测">
+<meta property="article:tag" content="Malicious Package Detection">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.w4y2sh3ll.top/2024/10/15/DONAPI-Malicious-NPM-Packages-Detector-using-Behavior-Sequence-Knowledge-Mapping/image.png">
+  
+  
+  
+  <title>DONAPI: Malicious NPM Packages Detector using Behavior Sequence Knowledge Mapping - W4y2Sh3ll</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.w4y2sh3ll.top","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>W4y2Sh3ll</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Kernel/">
+                
+                Kernel
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="DONAPI: Malicious NPM Packages Detector using Behavior Sequence Knowledge Mapping"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-10-15 14:46" pubdate>
+          2024年10月15日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          586 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          5 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">DONAPI: Malicious NPM Packages Detector using Behavior Sequence Knowledge Mapping</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="恶意软件包如何被下载到本地的"><a href="#恶意软件包如何被下载到本地的" class="headerlink" title="恶意软件包如何被下载到本地的"></a>恶意软件包如何被下载到本地的</h1><h2 id="名称相似包"><a href="#名称相似包" class="headerlink" title="名称相似包"></a>名称相似包</h2><p>攻击者上传一个名字和公开软件包相似的包，例如上传一个恶意包并且命名为<code>Pythom</code>，当用户需要下载<code>Python</code>却打错字为<code>Pythom</code>时，恶意软件包就会被下载。</p>
+<h2 id="依赖混淆"><a href="#依赖混淆" class="headerlink" title="依赖混淆"></a>依赖混淆</h2><p>攻击者上传一个被其它包依赖的同名恶意软件包，但是该恶意软件包拥有更高的版本号，用户同步包时会选择版本更高的那个，此时恶意软件包就会被下载。</p>
+<h2 id="成为开发者！"><a href="#成为开发者！" class="headerlink" title="成为开发者！"></a>成为开发者！</h2><p>攻击者直接参与维护公开软件包，并且植入恶意代码。</p>
+<h1 id="恶意软件包怎么执行命令"><a href="#恶意软件包怎么执行命令" class="headerlink" title="恶意软件包怎么执行命令"></a>恶意软件包怎么执行命令</h1><h2 id="Install时执行"><a href="#Install时执行" class="headerlink" title="Install时执行"></a>Install时执行</h2><p><code>package.json</code>里面的<code>scripts</code>字段的<code>preinstall</code>和<code>postinstall</code>关键字能够在软件包安装前后执行参数内的命令<br><img src="/2024/10/15/DONAPI-Malicious-NPM-Packages-Detector-using-Behavior-Sequence-Knowledge-Mapping/image.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="Import时执行"><a href="#Import时执行" class="headerlink" title="Import时执行"></a>Import时执行</h2><p>npm软件包在被导入时，会执行<code>package.json</code>里面的<code>main</code>字段内的文件<br><img src="/2024/10/15/DONAPI-Malicious-NPM-Packages-Detector-using-Behavior-Sequence-Knowledge-Mapping/image-1.png" srcset="/img/loading.gif" lazyload></p>
+<h1 id="DONAPI检测流程"><a href="#DONAPI检测流程" class="headerlink" title="DONAPI检测流程"></a>DONAPI检测流程</h1><p><img src="/2024/10/15/DONAPI-Malicious-NPM-Packages-Detector-using-Behavior-Sequence-Knowledge-Mapping/image-2.png" srcset="/img/loading.gif" lazyload alt="DONAPI框架"></p>
+<!-- ## Code Dependencies Reconstructor
+
+- 入口文件提取：
+该模块首先提取与npm包的安装和导入过程相关的入口文件，包括package.json中的scripts、main、exports、imports和bin字段。它使用正则表达式来捕获这些文件名，以便后续分析。
+
+- 依赖解析：
+通过解析代码中动态声明的其他代码文件的导入，重构器能够获取目标文件的内容。它支持CommonJS和ECMAScript模块系统的导入方法，生成相应的AST节点，并递归解析这些节点。
+
+- 对象修改：
+为了解决合并不同代码后变量名冲突的问题，重构器会统一导入和导出对象的标识符。它将导出对象的名称修改为export_file_name_object_name的形式，以避免重复。
+
+- 生成合并后的代码：
+最终，Code Dependencies Reconstructor将所有提取和修改后的代码合并到一个单独的.js文件中，形成一个“merged file”。这个文件包含了所有相关代码的统一视图，便于后续的静态和动态分析。
+
+## Malicious Shell Command Detector
+
+- 解析和提取命令：
+从package.json文件中的scripts字段提取shell命令。执行.sh文件并捕获执行的命令序列。分析代码中用于执行命令的API调用参数。构建命令的抽象语法树（AST）：使用bashlex库解析提取的shell命令，并构建AST。
+
+- 应用YARA规则：
+使用预定义的YARA规则来分析AST，以识别可疑或恶意的命令模式。
+
+- 恶意URL检测：
+提取命令中使用的URLs。使用一系列特征（如域名的熵、长度等）来评估URL的恶意程度。结合白名单和机器学习模型来提高检测的准确性和效率。
+
+- 行为分类：
+将检测到的恶意命令映射到特定的恶意行为类别，如信息窃取、文件操作、恶意软件下载等。
+
+- 输出检测结果：
+输出每个检测到的命令是否恶意的判断。提供详细的检测报告，包括恶意命令、恶意URL、YARA规则匹配结果和恶意行为分类。
+
+##  -->
+
+<ul>
+<li>首先检测package中各明文代码是否存在恶意的命令或者Url，如果不能检测到进入下一步</li>
+<li>将所有代码重构，生成一个Merged file，用于接下来的静态分析和动态分析</li>
+<li>通过模型判断Merged file是否混淆过，如果混淆过传入动态分析模块，反则静态分析模块</li>
+<li>静态分析模块通过AST Parser提取API序列，通过API序列生成特征传入模型检测是否为恶意软件包，如果不是正常软件包，继续传入动态模块分析</li>
+<li>动态分析模块通过API Hook提取恶意代码运行中产生API序列，传入最终的模型检测</li>
+</ul>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" class="category-chain-item">论文阅读</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E5%8C%85%E6%A3%80%E6%B5%8B/" class="category-chain-item">恶意软件包检测</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">#论文阅读</a>
+      
+        <a href="/tags/%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E5%8C%85%E6%A3%80%E6%B5%8B/">#恶意软件包检测</a>
+      
+        <a href="/tags/Malicious-Package-Detection/">#Malicious Package Detection</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>DONAPI: Malicious NPM Packages Detector using Behavior Sequence Knowledge Mapping</div>
+      <div>https://www.w4y2sh3ll.top/2024/10/15/DONAPI-Malicious-NPM-Packages-Detector-using-Behavior-Sequence-Knowledge-Mapping/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>W4y2Sh3ll</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年10月15日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <div id="twikoo"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/twikoo/1.6.7/twikoo.all.min.js', function() {
+        var options = Object.assign(
+          {"envId":"https://blog-comments-beige.vercel.app","region":"ap-shanghai","path":"window.location.pathname"},
+          {
+            el: '#twikoo',
+            path: 'window.location.pathname',
+            onCommentLoaded: function() {
+              var imgSelector = '#twikoo .tk-content img:not(.tk-owo-emotion)';
+              Fluid.plugins.imageCaption(imgSelector);
+              Fluid.plugins.fancyBox(imgSelector);
+            }
+          }
+        )
+        twikoo.init(options)
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>W4y2Sh3ll</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div style="font-size: 0.85rem"> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

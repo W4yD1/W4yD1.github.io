@@ -1,0 +1,815 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=dark>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/Patrick.png">
+  <link rel="icon" href="/img/Patrick.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="W4y2Sh3ll">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="摘要目前基于动态分析的挖矿恶意软件检测方法主要以挖矿恶意软件的工作量证明行为为检测对象，难以实现对此类软件的及时检测。 针对上述问题，通过分析挖矿恶意软件的运行过程，发现挖矿恶意软件在建立网络连接前行为多样，由此提出“挖矿软件行为多样期（Behavioral Diversity Period of Cryptominer，BDP）”的概念并进一步提出面向行为多样期的挖矿恶意软件早期检测方法（Cry">
+<meta property="og:type" content="article">
+<meta property="og:title" content="面向行为多样期的挖矿恶意软件早期检测方法">
+<meta property="og:url" content="https://www.w4y2sh3ll.top/2024/09/29/%E9%9D%A2%E5%90%91%E8%A1%8C%E4%B8%BA%E5%A4%9A%E6%A0%B7%E6%9C%9F%E7%9A%84%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95/index.html">
+<meta property="og:site_name" content="W4y2Sh3ll">
+<meta property="og:description" content="摘要目前基于动态分析的挖矿恶意软件检测方法主要以挖矿恶意软件的工作量证明行为为检测对象，难以实现对此类软件的及时检测。 针对上述问题，通过分析挖矿恶意软件的运行过程，发现挖矿恶意软件在建立网络连接前行为多样，由此提出“挖矿软件行为多样期（Behavioral Diversity Period of Cryptominer，BDP）”的概念并进一步提出面向行为多样期的挖矿恶意软件早期检测方法（Cry">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/09/29/%E9%9D%A2%E5%90%91%E8%A1%8C%E4%B8%BA%E5%A4%9A%E6%A0%B7%E6%9C%9F%E7%9A%84%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95/image.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/09/29/%E9%9D%A2%E5%90%91%E8%A1%8C%E4%B8%BA%E5%A4%9A%E6%A0%B7%E6%9C%9F%E7%9A%84%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95/image-1.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/09/29/%E9%9D%A2%E5%90%91%E8%A1%8C%E4%B8%BA%E5%A4%9A%E6%A0%B7%E6%9C%9F%E7%9A%84%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95/image-2.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/09/29/%E9%9D%A2%E5%90%91%E8%A1%8C%E4%B8%BA%E5%A4%9A%E6%A0%B7%E6%9C%9F%E7%9A%84%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95/image-3.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/09/29/%E9%9D%A2%E5%90%91%E8%A1%8C%E4%B8%BA%E5%A4%9A%E6%A0%B7%E6%9C%9F%E7%9A%84%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95/image-4.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/09/29/%E9%9D%A2%E5%90%91%E8%A1%8C%E4%B8%BA%E5%A4%9A%E6%A0%B7%E6%9C%9F%E7%9A%84%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95/image-5.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/09/29/%E9%9D%A2%E5%90%91%E8%A1%8C%E4%B8%BA%E5%A4%9A%E6%A0%B7%E6%9C%9F%E7%9A%84%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95/image-6.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/09/29/%E9%9D%A2%E5%90%91%E8%A1%8C%E4%B8%BA%E5%A4%9A%E6%A0%B7%E6%9C%9F%E7%9A%84%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95/image-7.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/09/29/%E9%9D%A2%E5%90%91%E8%A1%8C%E4%B8%BA%E5%A4%9A%E6%A0%B7%E6%9C%9F%E7%9A%84%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95/image-8.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/09/29/%E9%9D%A2%E5%90%91%E8%A1%8C%E4%B8%BA%E5%A4%9A%E6%A0%B7%E6%9C%9F%E7%9A%84%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95/image-9.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/09/29/%E9%9D%A2%E5%90%91%E8%A1%8C%E4%B8%BA%E5%A4%9A%E6%A0%B7%E6%9C%9F%E7%9A%84%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95/image-10.png">
+<meta property="og:image" content="https://www.w4y2sh3ll.top/2024/09/29/%E9%9D%A2%E5%90%91%E8%A1%8C%E4%B8%BA%E5%A4%9A%E6%A0%B7%E6%9C%9F%E7%9A%84%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95/image-11.png">
+<meta property="article:published_time" content="2024-09-29T10:12:53.000Z">
+<meta property="article:modified_time" content="2025-04-22T06:44:04.523Z">
+<meta property="article:author" content="W4y2Sh3ll">
+<meta property="article:tag" content="论文阅读">
+<meta property="article:tag" content="恶意软件早期检测">
+<meta property="article:tag" content="挖矿恶意软件早期检测">
+<meta property="article:tag" content="Malware Detection">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.w4y2sh3ll.top/2024/09/29/%E9%9D%A2%E5%90%91%E8%A1%8C%E4%B8%BA%E5%A4%9A%E6%A0%B7%E6%9C%9F%E7%9A%84%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95/image.png">
+  
+  
+  
+  <title>面向行为多样期的挖矿恶意软件早期检测方法 - W4y2Sh3ll</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.w4y2sh3ll.top","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>W4y2Sh3ll</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Kernel/">
+                
+                Kernel
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="面向行为多样期的挖矿恶意软件早期检测方法"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-09-29 18:12" pubdate>
+          2024年9月29日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          36 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">面向行为多样期的挖矿恶意软件早期检测方法</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><p>目前基于动态分析的挖矿恶意软件检测方法主要以挖矿恶意软件的工作量证明行为为检测对象，难以实现对此类软件的及时检测。</p>
+<p>针对上述问题，通过分析挖矿恶意软件的运行过程，发现挖矿恶意软件在建立网络连接前行为多样，由此提出“挖矿软件行为多样期（Behavioral Diversity Period of Cryptominer，BDP）”的概念并进一步提出面向行为多样期的挖矿恶意软件早期检测方法（Cryptomining Malware Early Detection Method in Behavioral Diversity Period，CEDMB）。</p>
+<p>该方法可以在软件开始运行后10s内以96.55%的F1-score值判别其是良性软件还是挖矿恶意软件。</p>
+<h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>传统的基于行为的恶意软件检测方法往往会将挖矿恶意软件误判为高负载的良性软件而发生漏报。一些诸如代码混淆、更换域名、限制进程 CPU 利用率等逃逸技术的使用也使其难以被传统的基于黑名单或规则匹配的检测方法准确检测。基于静态分析的检测方法难以应对代码混淆等逃逸技术。基于流量的检测方法则需要等待挖矿恶意软件产生挖矿流量后才能实现检测。基于机器学习的动态检测方法是目前的研究热点，但是现有该类方法所关注的行为主要是挖矿恶意软件执行工作量证明的行为，因此难以在挖矿恶意软件执行工作量证明行为之前将其检出。</p>
+<p>针对上述问题，该文从及时检测挖矿恶意软件的目标出发，从 <code>API</code>（Application Programming Interface）的角度分析其运行过程。基于挖矿恶意软件在建立网络连接前行为多样、连接建立后行为相对单一的现象，该文创新性的将挖矿恶意软件的检测重点放在挖矿恶意软件建立网络连接前的行为，提出“挖矿软件行为多样期（Behavioral Diversity Period of cryptominer，BDP）”的概念并通过 <code>socket</code>&#x2F;<code>WSAsocket</code> 定位该时间段，再以此为基础提出面向行为多样期的挖矿恶意软件早期检测方法（Cryptomining malware Early Detection Method in Behavioral diversity period，CEDMB）。 <code>CEDMB</code><br>兼顾挖矿恶意软件检测的及时性和准确性，以 <code>BDP</code> 内产生的 <code>API</code> 序列作为分析对象，使用 <code>n-gram</code> 和 <code>TFIDF</code> （Term Frequency-Inverse Document Frequency）生成特征向量，通过分类算法建立检测模型。</p>
+<p>该文的主要贡献如下：</p>
+<ul>
+<li>从 API 调用、API 序列熵值等方面分析挖矿恶意软件的运行过程，发现挖矿恶意软件在其运行初期表现出区别于良性软件的行为特性，以此为基础提出 <code>BDP</code> 的概念。将挖矿恶意软件的检测重点聚焦于挖矿<br>恶意软件建立网络连接前的行为，为设计挖矿恶意软件早期检测方法奠定了基础。</li>
+<li>提出面向 <code>BDP</code> 的挖矿恶意软件早期检测方法 <code>CEDMB</code> 。 <code>CEDMB</code> 采集待测对象在 <code>BDP</code> 内调用的 <code>API</code> 序列，运用 <code>n-gram</code> 和 <code>TF-IDF</code> 算法对 <code>API</code> 序列进行特征计算，最后使用机器学习算法进行模型训练及检测。</li>
+<li>使用涉及 12 个币种的多款挖矿恶意软件以及多种类型的良性软件组成的样本集对 <code>CEDMB</code> 进行测试。实验结果表明， <code>CEDMB</code> 能够准确地检测出处于运行初期的已知和未知的挖矿恶意软件样本。</li>
+</ul>
+<h1 id="相关工作"><a href="#相关工作" class="headerlink" title="相关工作"></a>相关工作</h1><h2 id="静态检测方法"><a href="#静态检测方法" class="headerlink" title="静态检测方法"></a>静态检测方法</h2><ul>
+<li>提取挖矿恶意软件的操作码序列并使用深度学习算法建立检测模型。</li>
+<li>将挖矿网页的 WebAssembly 脚本编译生成的二进制文件转换为灰度图，结合卷积神经网络算法构建了一个轻量高效的检测模型。</li>
+<li>基于威胁情报层次特征集成的挖矿恶意软件检测方法，使用多种静态特征训练检测模型。</li>
+</ul>
+<p>总之，静态检测方法具有较高的检测效率，但是难以对抗一些采用了混淆等绕过技术的挖矿恶意软件。</p>
+<h2 id="动态检测方法"><a href="#动态检测方法" class="headerlink" title="动态检测方法"></a>动态检测方法</h2><ul>
+<li>将处理器、内存等硬件资源的使用情况作为数据训练检测模型。（需要等待系统性能受到影响后才能检测出挖矿恶意软件）</li>
+<li>使用 <code>API</code> 序列结合深度学习实现检测。</li>
+<li>使用 <code>n-gram</code> 模型从 <code>API</code> 序列中提取特征</li>
+</ul>
+<p>总之，基于 <code>API</code> 的动态检测方法可以较好地应对应用了混淆技术的挖矿恶意软件，但目前该类方法或需要较长的 <code>API</code> 序列采集时间，或主要关注样本执行工作量证明的行为，难以兼顾挖矿恶意软件检测的及时性和准确性。</p>
+<h2 id="流量监测方法"><a href="#流量监测方法" class="headerlink" title="流量监测方法"></a>流量监测方法</h2><ul>
+<li>使用 51 个通信行为统计特征的挖矿加密流量检测，对来自 <code>xmr-stak</code> 和 <code>xmrig</code> 的流量进行检测。</li>
+<li>基于时间序列的挖矿流量检测方法，根据网络流序列和区块创建序列的相似度实施对 <code>xmrig</code> 挖矿流量的检测。</li>
+<li>借助卷积函数从挖矿流量的前数个数据包构成的包负载大小序列中提取特征，再使用机器学习建立检测模型。</li>
+</ul>
+<p>总之，基于流量分析的检测方法可以监控网络入口的流量，覆盖所监控网络内的所有设备。但是该类方法需要在挖矿恶意软件成功连接矿池之后才能收集到流量来进行检测。同时，一些诸如延迟发送数据包、增加无用数据包、添加代理等逃逸手段的出现也影响了该类检测方法的效果。</p>
+<h1 id="挖矿恶意软件行为分析"><a href="#挖矿恶意软件行为分析" class="headerlink" title="挖矿恶意软件行为分析"></a>挖矿恶意软件行为分析</h1><h2 id="挖矿恶意软件攻击过程"><a href="#挖矿恶意软件攻击过程" class="headerlink" title="挖矿恶意软件攻击过程"></a>挖矿恶意软件攻击过程</h2><p>挖矿恶意软件会在运行初期密集地执行一系列行为，如信息收集、检查防护进程或系统监控进程的存在、生成副本、修改计划任务和自启动项等。</p>
+<h2 id="挖矿恶意软件API序列分析"><a href="#挖矿恶意软件API序列分析" class="headerlink" title="挖矿恶意软件API序列分析"></a>挖矿恶意软件API序列分析</h2><p>该文收集了覆盖多种加密货币类型的75款挖矿恶意软件，在 <code>VMware</code> 创建的 <code>Windows10</code> 虚拟机中收集各样本在其默认的进程 <code>CPU</code> 利用率阈值下运行1分钟的 <code>API</code> 序列，从 <code>API</code> 调用的角度对这些 <code>API</code> 序列进行分析。该文将对应特定行为且相对固定的 <code>API</code> 调用称为特征 <code>API</code> 调用。</p>
+<p>分析结果显示上述挖矿恶意软件在运行初期会频繁调用与内存操作、线程读写操作相关的特征 <code>API</code> 调用，如与修改计划任务相关的 <code>NtNotifyChangeKey</code> → <code>RtlInitAnsiStringEx</code> （“→”表示 <code>API</code> 间存在调用关系）。之后挖矿恶意软件会调用 <code>socket</code>&#x2F;<code>WSAsocket</code> 来连接矿池。在与矿池建立网络连接之后，其调用的 <code>API</code> 逐渐变得单一，具体表现为不断重复调用与工作量证明相关的特征 <code>API</code> 调用，如sleep→NtDelayExecution→memcpy。</p>
+<h2 id="挖矿软件行为多样期"><a href="#挖矿软件行为多样期" class="headerlink" title="挖矿软件行为多样期"></a>挖矿软件行为多样期</h2><p>挖矿恶意软件的每秒 <code>API</code> 序列熵值在运行初期时较大，然后快速下降并出现波动，一定时间之后则较为稳定。良性软件各时刻的每秒 <code>API</code> 序列熵值均在波动，与挖矿恶意软件区别较大。</p>
+<p>该文以网络连接建立与否来判断挖矿恶意软件是否进入挖矿阶段，并关注其挖矿阶段前的行为。基于以上分析，该文提出 <code>BDP</code> 的概念，其在挖矿恶意软件运行过程中所处时间段如下图所示：</p>
+<p><img src="/2024/09/29/%E9%9D%A2%E5%90%91%E8%A1%8C%E4%B8%BA%E5%A4%9A%E6%A0%B7%E6%9C%9F%E7%9A%84%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95/image.png" srcset="/img/loading.gif" lazyload alt="挖矿软件行为多样期示意图"></p>
+<p>下表统计了 75 款挖矿恶意软件以及多种类型的 75 款良性软件开始运行后1分钟内调用socket&#x2F;WSASocket的情况：</p>
+<p><img src="/2024/09/29/%E9%9D%A2%E5%90%91%E8%A1%8C%E4%B8%BA%E5%A4%9A%E6%A0%B7%E6%9C%9F%E7%9A%84%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95/image-1.png" srcset="/img/loading.gif" lazyload alt="不同软件调用socket&#x2F;WSASocket的时间统计"></p>
+<p>上表显示绝大多数挖矿恶意软件在开始运行 2s 内就调用了 <code>socket</code>&#x2F;<code>WSASocket</code> 来创建流套接字以连接矿池。有7个挖矿恶意软件因为缺少运行环境、矿池域名解析失败等未调用 <code>socket</code>&#x2F;<code>WSASocket</code> 。<br>上表还显示仅有少部分良性软件在 1min 内存在 <code>socket</code>&#x2F;<code>WSASocket</code> 调用且调用时间多在 2s 之后 。<br>基于以上分析，该文以首次调用 <code>socket</code>&#x2F;<code>WSASocket</code> 作为挖矿恶意软件建立网络连接的标志，此时挖矿恶意软件还未执行其挖矿操作，因此利用 <code>BDP</code> 内的 <code>API</code> 序列可对其进行早期检测。</p>
+<h1 id="CEDMB"><a href="#CEDMB" class="headerlink" title="CEDMB"></a>CEDMB</h1><p>基于上一章的分析，该文提出了 <code>CEDMB</code>。 <code>CEDMB从</code> <code>BDP</code> 内的 <code>API</code> 序列中提取特征，然后使用分类算法构建检测模型。框架如下图：</p>
+<p><img src="/2024/09/29/%E9%9D%A2%E5%90%91%E8%A1%8C%E4%B8%BA%E5%A4%9A%E6%A0%B7%E6%9C%9F%E7%9A%84%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95/image-2.png" srcset="/img/loading.gif" lazyload alt="CEDMB框架"></p>
+<h2 id="数据收集"><a href="#数据收集" class="headerlink" title="数据收集"></a>数据收集</h2><p>该文发现挖矿恶意软件使用的挖矿算法和选用的进程 <code>CPU</code> 利用率阈值会影响其产生的 <code>API</code> 序列：一是部分挖矿恶意软件支持多种挖矿算法且在使用不同的挖矿算法时产生的API序列在每秒 <code>API</code> 序列熵值、长度以及频繁调用的 <code>API</code> 等方面存在差异；二是挖矿恶意软件设定不同的进程 <code>CPU</code> 利用率阈值时运行所产生的 <code>API</code> 序列有区别。</p>
+<p>因此，该文采用如下方式收集用于训练的挖矿恶意软件的 <code>API</code> 序列：一是分别收集同一软件使用不同挖矿算法所产生的 <code>API</code> 序列；二是将同一软件的进程 <code>CPU</code> 利用率阈值分别设置为 25%、50%、75%、100%后运行并收集各自的 <code>API</code> 序列。</p>
+<p>收集 <code>API</code> 序列的时间区间为程序运行到 <code>T</code> （<code>T</code>为自定阈值）。</p>
+<h2 id="特征计算"><a href="#特征计算" class="headerlink" title="特征计算"></a>特征计算</h2><p>一些特征 <code>API</code> 调用能反映挖矿恶意软件的行为特性，为了提取这些特征 <code>API</code> 调用， <code>CEDMB</code> 使用 <code>n-gram</code> 。 <code>n-gram</code> 将长度为 n 的子序列作为独立特征考虑，可以保留 <code>API</code> 之间的调用关系。经过 <code>n-gram</code> 处理后会存在部分冗余 <code>n-gram</code> 序列。因此， <code>CEDMB</code> 运用 <code>TFIDF</code> 算法对 <code>n-gram</code> 序列进行筛选及计算特征值。</p>
+<h2 id="模型训练与检测"><a href="#模型训练与检测" class="headerlink" title="模型训练与检测"></a>模型训练与检测</h2><p><code>CEDMB</code> 在本阶段将利用上阶段计算出的特征向量，结合机器学习分类算法构建检测模型，用以区分良性软件和挖矿恶意软件。</p>
+<h1 id="实验及结果"><a href="#实验及结果" class="headerlink" title="实验及结果"></a>实验及结果</h1><h2 id="实验环境与样本"><a href="#实验环境与样本" class="headerlink" title="实验环境与样本"></a>实验环境与样本</h2><p><img src="/2024/09/29/%E9%9D%A2%E5%90%91%E8%A1%8C%E4%B8%BA%E5%A4%9A%E6%A0%B7%E6%9C%9F%E7%9A%84%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95/image-3.png" srcset="/img/loading.gif" lazyload alt="实验数据集划分"></p>
+<h2 id="评估指标"><a href="#评估指标" class="headerlink" title="评估指标"></a>评估指标</h2><p>该文使用了恶意软件检测领域中常用的评估指标对 <code>CEDMB</code> 进行评估，包括准确率（Accuracy），精确率（Precision），召回率（Recall）和F1-score（F1）。</p>
+<h2 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h2><p>模型参数细节如下：</p>
+<p><img src="/2024/09/29/%E9%9D%A2%E5%90%91%E8%A1%8C%E4%B8%BA%E5%A4%9A%E6%A0%B7%E6%9C%9F%E7%9A%84%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95/image-4.png" srcset="/img/loading.gif" lazyload alt="实验中分类算法的参数"></p>
+<h3 id="测试集1的检测结果"><a href="#测试集1的检测结果" class="headerlink" title="测试集1的检测结果"></a>测试集1的检测结果</h3><p><img src="/2024/09/29/%E9%9D%A2%E5%90%91%E8%A1%8C%E4%B8%BA%E5%A4%9A%E6%A0%B7%E6%9C%9F%E7%9A%84%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95/image-5.png" srcset="/img/loading.gif" lazyload alt="CEDMB在2-gram和T为4s时在测试集1上使用不同分类算法得到的检测结果"></p>
+<p><code>CEDMB</code> 使用 <code>RF</code> 算法时得到的检测结果最佳，此时 <code>F1</code> 值达到了98.36%。</p>
+<p><img src="/2024/09/29/%E9%9D%A2%E5%90%91%E8%A1%8C%E4%B8%BA%E5%A4%9A%E6%A0%B7%E6%9C%9F%E7%9A%84%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95/image-6.png" srcset="/img/loading.gif" lazyload alt="CEDMB使用T&#x3D;4 s和RF时在测试集1上使用不同特征计算方法得到的检测结果"></p>
+<p><code>2IG</code> 指代 <code>CEDMB</code> 使用 <code>2-gram</code> 和信息增益计算特征； <code>BoW</code> 指代 <code>CEDMB</code> 使用词袋模型计算特征； <code>TIW</code> 指代 <code>CEDMB</code> 使用 <code>word2vec</code> 生成 <code>API</code> 的词向量，再使用<code>API</code>的 <code>TF-IDF</code> 值对 <code>API</code> 词向量进行加权平均来得到特征向量； <code>2T</code> 指代 <code>CEDMB</code> 使用 <code>2-gram</code> 和 <code>TF-IDF</code> 计算特征。特征计算时间为全部测试 <code>API</code> 序列转换为特征向量的时间。</p>
+<p><img src="/2024/09/29/%E9%9D%A2%E5%90%91%E8%A1%8C%E4%B8%BA%E5%A4%9A%E6%A0%B7%E6%9C%9F%E7%9A%84%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95/image-7.png" srcset="/img/loading.gif" lazyload alt="CEDMB在不同T值和n-gram下使用4种分类算法得到的F1值"></p>
+<p><code>CEDMB</code> 使用不同 <code>n-gram</code> 以及不同分类算法时大多在<code>T</code>为4s时获得最佳的 <code>F1</code> 值。大多数挖矿恶意软件的调用时间在开始运行后2s内，少部分在2s到5s。因此，以<code>T</code>为4s收集的 <code>API</code> 序列囊括了绝大多数挖矿恶意软件样本在建立网络连接前的行为，而这些行为与良性软件存在明显区别。</p>
+<p><code>CEDMB</code> 在n为2和3时使用不同分类算法获得的 <code>F1</code> 值总体上略优于n为4时获得的 <code>F1</code> 值。这主要是因为挖矿恶意软件的特征 <code>API</code> 调用的长度大多为2和3。</p>
+<p><img src="/2024/09/29/%E9%9D%A2%E5%90%91%E8%A1%8C%E4%B8%BA%E5%A4%9A%E6%A0%B7%E6%9C%9F%E7%9A%84%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95/image-8.png" srcset="/img/loading.gif" lazyload alt="不同检测方法在测试集1上的检测结果"></p>
+<h3 id="测试集2的检测结果"><a href="#测试集2的检测结果" class="headerlink" title="测试集2的检测结果"></a>测试集2的检测结果</h3><p><img src="/2024/09/29/%E9%9D%A2%E5%90%91%E8%A1%8C%E4%B8%BA%E5%A4%9A%E6%A0%B7%E6%9C%9F%E7%9A%84%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95/image-9.png" srcset="/img/loading.gif" lazyload alt="CEDMB在不同T值下使用2-gram和RF时在测试集2上得到的检测结果"></p>
+<p><img src="/2024/09/29/%E9%9D%A2%E5%90%91%E8%A1%8C%E4%B8%BA%E5%A4%9A%E6%A0%B7%E6%9C%9F%E7%9A%84%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95/image-10.png" srcset="/img/loading.gif" lazyload alt="CEDMB使用T&#x3D;4 s和RF时在测试集2上使用不同特征计算方法得到的检测结果"></p>
+<p><img src="/2024/09/29/%E9%9D%A2%E5%90%91%E8%A1%8C%E4%B8%BA%E5%A4%9A%E6%A0%B7%E6%9C%9F%E7%9A%84%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95/image-11.png" srcset="/img/loading.gif" lazyload alt="不同检测方法在测试集2上的检测结果"></p>
+<h1 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h1><h2 id="创新点"><a href="#创新点" class="headerlink" title="创新点"></a>创新点</h2><ul>
+<li>使用了不同的特征计算方法，并且证明2T方法效果最好。</li>
+</ul>
+<h2 id="新点子"><a href="#新点子" class="headerlink" title="新点子"></a>新点子</h2><ul>
+<li>提取出来的API短序列应该是只包含API名，如果提取出来的API短序列还包含API参数、API调用者和API调用时间等信息，效果会不会更好？</li>
+</ul>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" class="category-chain-item">论文阅读</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B/" class="category-chain-item">恶意软件早期检测</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">#论文阅读</a>
+      
+        <a href="/tags/%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B/">#恶意软件早期检测</a>
+      
+        <a href="/tags/%E6%8C%96%E7%9F%BF%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%97%A9%E6%9C%9F%E6%A3%80%E6%B5%8B/">#挖矿恶意软件早期检测</a>
+      
+        <a href="/tags/Malware-Detection/">#Malware Detection</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>面向行为多样期的挖矿恶意软件早期检测方法</div>
+      <div>https://www.w4y2sh3ll.top/2024/09/29/面向行为多样期的挖矿恶意软件早期检测方法/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>W4y2Sh3ll</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年9月29日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <div id="twikoo"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/twikoo/1.6.7/twikoo.all.min.js', function() {
+        var options = Object.assign(
+          {"envId":"https://blog-comments-beige.vercel.app","region":"ap-shanghai","path":"window.location.pathname"},
+          {
+            el: '#twikoo',
+            path: 'window.location.pathname',
+            onCommentLoaded: function() {
+              var imgSelector = '#twikoo .tk-content img:not(.tk-owo-emotion)';
+              Fluid.plugins.imageCaption(imgSelector);
+              Fluid.plugins.fancyBox(imgSelector);
+            }
+          }
+        )
+        twikoo.init(options)
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>W4y2Sh3ll</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div style="font-size: 0.85rem"> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
