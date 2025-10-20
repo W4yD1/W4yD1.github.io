@@ -7,6 +7,9 @@ categories:
     - NepCTF2025
 ---
 
+![](image.png)
+下了一个HTTP的题，不算的话PWN就AK了，HRPOS绕了点路，不然还有个三🩸。
+我的评价是：NepCTF是最好的个人赛！
 
 ## Time
 
@@ -460,7 +463,7 @@ ia()
 
 ## canutrytry
 
-初始化将flag读到了bss内，沙箱只允许read、write和futex。visit的2可以读取size，1根据2读取的sizemalloc，如果size为负数会触发一个异常，然后被main函数的其中一个catch（401F7B）接住，这个catch会泄露libc和stack。visit的3可以向malloc的chunk内读取数据，leave可以将chunk内的数据复制到局部变量内，存在溢出，如果检测到溢出也会抛出一个异常。
+初始化将flag读到了bss内，沙箱只允许read、write和futex。visit的2可以读取size，1根据2读取的size malloc，如果size为负数会触发一个异常，然后被main函数的其中一个catch（401F7B）接住，这个catch会泄露libc和stack。visit的3可以向malloc的chunk内读取数据，leave可以将chunk内的数据复制到局部变量内，存在溢出，如果检测到溢出也会抛出一个异常。
 
 main还有一个异常处理的catch（401F19），这个catch会调用两个函数，第一个可以向全局变量输入数据，第二个存在溢出，且也会抛出异常。
 
